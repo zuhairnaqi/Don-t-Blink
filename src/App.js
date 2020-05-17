@@ -150,42 +150,42 @@ class App extends React.Component {
   }
 
   render() {
-    // console.log(this.state.selectedNote);
-    // const { timerTime } = this.state;
-    // // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
-    // let second = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2);
-    // let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
-    // // let hour = ("0" + Math.floor(timerTime / 3600000)).slice(-2);
+    console.log(this.state.selectedNote);
+    const { timerTime } = this.state;
+    // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
+    let second = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2);
+    let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
+    // let hour = ("0" + Math.floor(timerTime / 3600000)).slice(-2);
 
-    // //Here is the color validaiton(don't touch anything here)
+    //Here is the color validaiton(don't touch anything here)
 
-    // let inputStyle = {
-    //   color: 'white',
-    //   width:'1000px'
-    // };
-    // let inputText=this.state.inputWord.split(" ")
+    let inputStyle = {
+      color: 'white',
+      width:'1000px'
+    };
+    let inputText=this.state.inputWord.split(" ")
 
-    // for(var i =0; i < inputText.length; i++){
-    //   if(this.state.selectedNote.includes(inputText[i])===true){ 
+    for(var i =0; i < inputText.length; i++){
+      if(this.state.selectedNote.includes(inputText[i])===true){ 
 
-    //     if(this.state.inputWord.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])){
+        if(this.state.inputWord.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])){
 
-    //     inputStyle = {
-    //       color: 'blue'
-    //     };
-    //     }else{
+        inputStyle = {
+          color: 'blue'
+        };
+        }else{
 
-    //     inputStyle = {
-    //       color: 'yellow'
-    //     };
-    //     }
-    // }else{
+        inputStyle = {
+          color: 'yellow'
+        };
+        }
+    }else{
 
-    //   inputStyle = {
-    //     color: 'white'
-    //   };
-    // }
-    // }
+      inputStyle = {
+        color: 'white'
+      };
+    }
+    }
 
     return (
       <>
