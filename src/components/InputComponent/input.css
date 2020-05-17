@@ -1,0 +1,11 @@
+.buttonsContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.inputStyle { 
+    width: 1000px !important;
+    padding-top: 10px !important;
+    overflow-y: auto !important;
+    line-height: initial !important;
+}
