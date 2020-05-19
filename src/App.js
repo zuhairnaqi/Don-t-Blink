@@ -62,7 +62,6 @@ class App extends React.Component {
       timerOn: true,
       timerTime: this.state.timerTime,
       timerStart: Date.now() - this.state.timerTime
-
     })
     this.timer = setInterval(() => {
       this.setState({
@@ -90,14 +89,12 @@ class App extends React.Component {
   }
 
   handleInputWord = (e) => {
-
     if (e.target.value === this.state.selectedNote) {
       this.setState({
         perfect: true,
         inputHidden: true,
         inputWord: e.target.value,
         timerOn: false
-
       })
       this.setState({ inputWord: e.target.value })
       clearInterval(this.timer);
@@ -107,7 +104,6 @@ class App extends React.Component {
         inputWord: e.target.value
       })
     }
-
   }
 
   handleAgain = () => {
@@ -150,6 +146,11 @@ class App extends React.Component {
     })
   }
 
+  routeToLearning = () => {
+    this.setState({ startLearning: true });
+    clearInterval(this.timer);
+  }
+
   render() {
     const { timerTime, startLearning } = this.state;
     // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
@@ -174,13 +175,11 @@ class App extends React.Component {
             color: 'blue'
           };
         } else {
-
           inputStyle = {
             color: 'yellow'
           };
         }
       } else {
-
         inputStyle = {
           color: 'white'
         };
@@ -189,7 +188,6 @@ class App extends React.Component {
 
     return (
       <>
-
         <div className="App-header">
           {/* this is the animation of the logo */}
           <div className="os-phrases">
@@ -207,7 +205,7 @@ class App extends React.Component {
               <h2 className="count"> {this.state.count} <small>{this.state.countsec / 1000}s</small></h2>
               <MDBInput className="text-center" autoFocus style={inputStyle} value={this.state.inputWord} type="text" onChange={(e) => this.handleInputWord(e)} size="lg" />
               <h2 className="text-center pt-2 mb-2" style={{ cursor: "pointer", margin: '30px 0' }} onClick={this.handleAgain}>Again?</h2>
-              <MDBBtn color="success" outline onClick={() => this.setState({ startLearning: true })}>Learn it!</MDBBtn>
+              <MDBBtn color="success" outline onClick={() => this.routeToLearning()}>Learn it!</MDBBtn>
             </>}
 
             {this.state.perfect && <div className="text-center" style={{ position: "absolute" }}>
