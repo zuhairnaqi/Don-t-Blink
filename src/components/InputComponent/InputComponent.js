@@ -240,18 +240,15 @@ export default class extends Component {
             if (this.state.selectedNote.includes(inputText[i]) === true) {
 
                 if (this.state.inputWord.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])) {
-
                     inputStyle = {
                         color: 'blue'
                     };
                 } else {
-
                     inputStyle = {
                         color: 'yellow'
                     };
                 }
             } else {
-
                 inputStyle = {
                     color: 'white'
                 };
