@@ -129,16 +129,16 @@ export default class extends Component {
                     timerTime: Date.now() - this.state.timerStart
                 });
             }, 10);
-            const s = this.state.sentences.length
-            if (s === this.state.in) {
+            // const s = this.state.sentences.length
+            // if (s === this.state.in) {
 
-            } else {
+            // } else {
                 this.setState({
                     in: this.state.in + 1,
                     selectedNote: this.state.sentences[sentenceIndex].sentence,
                     // selectedNote: this.state.sentences[Math.floor(this.state.in)],
                 })
-            }
+            // }
         }, sentences[sentenceIndex].sentence.length * 20)
     }
 
@@ -153,11 +153,10 @@ export default class extends Component {
                 repeatSentence.tried = true;
                 sentences.push(repeatSentence);
                 index -= 1;
-            } else {
+            } else if (sentences[sentenceIndex]) {
                 sentences[sentenceIndex].mastered = true;
                 sentences[sentenceIndex].tried = true;
             }
-            console.log(index, sentences);
             this.setState({
                 perfect: true,
                 inputWord: e.target.value,
@@ -216,6 +215,7 @@ export default class extends Component {
             flashCount: 1,
             againSentenceMessage: false
         })
+        console.log(this.state);
     }
 
 
