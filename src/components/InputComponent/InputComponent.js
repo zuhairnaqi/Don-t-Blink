@@ -34,7 +34,11 @@ export default class extends Component {
             flashCount: 1,
 
             againSentenceMessage: false,
-            flashBannerTiming: 3800 // Flash one don't blink text banner timing
+            flashBannerTiming: 3800, // Flash one don't blink text banner timing,
+            inputStyle: {
+                color: 'white',
+                width: '1000px'
+            },
         }
     }
 
@@ -144,6 +148,30 @@ export default class extends Component {
 
     handleInputWord = e => {
         const { sentences, sentenceIndex, selectedNote, count } = this.state;
+        //Here is the color validaiton(don't touch anything here)
+        let inputStyle = {
+            color: 'white',
+            width: '1000px'
+        };
+        let inputText = e.target.value.trim().split(" ");
+
+        for (var i = 0; i < inputText.length; i++) {
+            if (this.state.selectedNote.includes(inputText[i]) === true) {
+                if (e.target.value.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])) {
+                    inputStyle = {
+                        color: 'blue'
+                    };
+                } else {
+                    inputStyle = {
+                        color: 'yellow'
+                    };
+                }
+            } else {
+                inputStyle = {
+                    color: 'white'
+                };
+            }
+        }
         if (e.target.value === selectedNote) {
             let index = sentenceIndex + 1;
             let isFlashUsed = count > 1;
@@ -165,12 +193,14 @@ export default class extends Component {
                 sentences,
                 sentenceIndex: index,
                 againSentenceMessage: isFlashUsed,
+                inputStyle,
             })
             clearInterval(this.timer);
         } else {
             this.setState({
                 againHidden: false,
-                inputWord: e.target.value
+                inputWord: e.target.value,
+                inputStyle,
             })
         }
     }
@@ -227,6 +257,7 @@ export default class extends Component {
             sentences,
             sentenceIndex,
             inputWord,
+            inputStyle,
             timerTime,
             flashCount,
             againSentenceMessage
@@ -237,32 +268,6 @@ export default class extends Component {
         let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
         // let hour = ("0" + Math.floor(timerTime / 3600000)).slice(-2);
 
-        //Here is the color validaiton(don't touch anything here)
-
-        let inputStyle = {
-            color: 'white',
-            width: '1000px'
-        };
-        let inputText = this.state.inputWord.split(" ")
-
-        for (var i = 0; i < inputText.length; i++) {
-            if (this.state.selectedNote.includes(inputText[i]) === true) {
-
-                if (this.state.inputWord.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])) {
-                    inputStyle = {
-                        color: 'blue'
-                    };
-                } else {
-                    inputStyle = {
-                        color: 'yellow'
-                    };
-                }
-            } else {
-                inputStyle = {
-                    color: 'white'
-                };
-            }
-        }
         let [ notTriedSentencesCount, notMasteredCount, masteredCount ] = [ 0, 0, 0 ];
         sentences.forEach(obj => {
             if (!obj.tried) {
