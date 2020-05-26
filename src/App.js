@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { MDBAnimation, MDBInput } from "mdbreact"
+import { MDBAnimation, MDBInput, MDBBtn } from "mdbreact"
 import InputComponent from './components/InputComponent/InputComponent';
 
 class App extends React.Component {
@@ -37,7 +37,9 @@ class App extends React.Component {
       color: "white",
       tryAgain: false,
       in: 0,
-      te: false
+      te: false,
+      showIntroduction: true,
+      showReady: true,
     }
     this.handleInputWord = this.handleInputWord.bind(this);
 
@@ -46,23 +48,23 @@ class App extends React.Component {
   handleClick = () => {
     setTimeout(() => {
       this.setState({
-        showWord: true
+        clickedReady: true,
+        selectedEnd: this.state.per[Math.floor(Math.random() *
+          this.state.per.length)],
+        inputHidden: false,
+        hideReady: true,
+        hideReadys: true,
+        perfect: false,
+        inputWord: '',
+        showWord: true,
+        timerOn: true,
+        timerTime: this.state.timerTime,
+        timerStart: Date.now() - this.state.timerTime,
       })
     }, 300)
     this.setState({
-      clickedReady: true,
-      selectedEnd: this.state.per[Math.floor(Math.random() *
-        this.state.per.length)],
-      inputHidden: false,
-      hideReady: true,
-      hideReadys: true,
-      perfect: false,
-      inputWord: '',
-      showWord: false,
-      timerOn: true,
-      timerTime: this.state.timerTime,
-      timerStart: Date.now() - this.state.timerTime
-
+        showReady: false,
+        showWord: false
     })
     this.timer = setInterval(() => {
       this.setState({
@@ -89,15 +91,20 @@ class App extends React.Component {
     // }
   }
 
-  handleInputWord = (e) => {
+  componentDidMount() {
+    setTimeout(() => {
+      console.log('done');
+      this.setState({showIntroduction: false});
+    }, 13000)
+  }
 
+  handleInputWord = (e) => {
     if (e.target.value === this.state.selectedNote) {
       this.setState({
         perfect: true,
         inputHidden: true,
         inputWord: e.target.value,
         timerOn: false
-
       })
       this.setState({ inputWord: e.target.value })
       clearInterval(this.timer);
@@ -107,7 +114,6 @@ class App extends React.Component {
         inputWord: e.target.value
       })
     }
-
   }
 
   handleAgain = () => {
@@ -145,13 +151,18 @@ class App extends React.Component {
       timerStart: 0,
       timerTime: 0,
       countsec: 200,
-      spans: []
+      spans: [],
+      startLearning: false,
     })
   }
 
+  routeToLearning = () => {
+    this.setState({ startLearning: true });
+    clearInterval(this.timer);
+  }
+
   render() {
-    console.log(this.state.selectedNote);
-    const { timerTime } = this.state;
+    const { timerTime, startLearning, showIntroduction, showReady } = this.state;
     // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
     let second = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2);
     let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
@@ -161,45 +172,68 @@ class App extends React.Component {
 
     let inputStyle = {
       color: 'white',
-      width:'1000px'
+      width: '1000px'
     };
-    let inputText=this.state.inputWord.split(" ")
+    let inputText = this.state.inputWord.split(" ")
 
-    for(var i =0; i < inputText.length; i++){
-      if(this.state.selectedNote.includes(inputText[i])===true){ 
+    for (var i = 0; i < inputText.length; i++) {
+      if (this.state.selectedNote.includes(inputText[i]) === true) {
 
-        if(this.state.inputWord.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])){
+        if (this.state.inputWord.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])) {
 
-        inputStyle = {
-          color: 'blue'
-        };
-        }else{
-
-        inputStyle = {
-          color: 'yellow'
-        };
+          inputStyle = {
+            color: 'blue'
+          };
+        } else {
+          inputStyle = {
+            color: 'yellow'
+          };
         }
-    }else{
-
-      inputStyle = {
-        color: 'white'
-      };
-    }
+      } else {
+        inputStyle = {
+          color: 'white'
+        };
+      }
     }
 
     return (
       <>
-
         <div className="App-header">
           {/* this is the animation of the logo */}
-          {/* <div className="os-phrases">
-            <h2 hidden={this.state.hideReady}><span className="blinking">don't</span> blink</h2>
-            <h2 hidden={this.state.hideReady}>you have one job</h2>
-            <h2 hidden={this.state.hideReady}>write down what you see</h2>
-            <h2 style={{ cursor: "pointer" }} onClick={this.handleClick} hidden={this.state.hideReady}>Ready?</h2>
-          </div> */}
 
-          <InputComponent />
+          {showIntroduction ? 
+            <div className="os-phrases" onClick={() => this.setState({ showIntroduction: false })}>
+              <h2 hidden={this.state.hideReady}><span className="blinking">don't</span> blink</h2>
+              <h2 hidden={this.state.hideReady}>you have one job</h2>
+              <h2 hidden={this.state.hideReady}>write down what you see</h2>
+            </div>
+           : (
+            startLearning ? <InputComponent /> : <>
+              {showReady && <h2 style={{ cursor: "pointer" }} onClick={this.handleClick}>Ready?</h2>}
+              <h1 className="pb-2" style={{ position: "absolute", fontSize: "3.35rem" }} hidden={this.state.showWord}>{this.state.selectedNote}</h1>
+              {!this.state.inputHidden && <>
+                {/* Here is the counter of flashes and length of the first flash view*/}
+                <h2 className="count"> {this.state.count} <small>{this.state.countsec / 1000}s</small></h2>
+                <MDBInput className="text-center" autoFocus style={inputStyle} value={this.state.inputWord} type="text" onChange={(e) => this.handleInputWord(e)} size="lg" />
+                <h2 className="text-center pt-2 mb-2" style={{ cursor: "pointer", margin: '30px 0' }} onClick={this.handleAgain}>Again?</h2>
+                <MDBBtn color="success" outline onClick={() => this.routeToLearning()}>Learn it!</MDBBtn>
+              </>}
+
+              {this.state.perfect && <div className="text-center" style={{ position: "absolute" }}>
+                <MDBInput type="text" className="text-center" style={inputStyle} value={this.state.inputWord} onChange={(e) => this.handleInputWord(e)} size="lg" />
+                <h2>{this.state.selectedEnd}</h2>
+                <MDBAnimation type="fadeIn" duration="1s" delay="2s">
+                  {/* Here is the counter of flashes */}
+                  <h2 className="p-2">{this.state.count} flashes, {minute}:{second} Seconds</h2>
+                  <h2 style={{ cursor: "pointer" }} onClick={this.resetState}>I want more</h2>
+                </MDBAnimation>
+              </div>}
+
+              {this.state.te && <div>
+                <h1>Thanks</h1>
+              </div>}
+            </>
+          )}
         </div>
       </>
     );
@@ -208,52 +242,3 @@ class App extends React.Component {
 export default App;
 
 
-
-// {/* <h2 style={{cursor:"pointer"}} onClick={this.handleClick} hidden={this.state.hideReadys}>Ready?</h2>
-// <h1 className="pb-2" style={{position:"absolute" , fontSize: "3.35rem"}}  hidden={this.state.showWord}>{this.state.selectedNote}</h1>
-// {
-//   this.state.inputHidden?
-//   (
-//     <></>
-//   ):
-//   (
-//     < >
-//     {/* Here is the counter of flashes and length of the first flash view*/}
-//     <h2 className="count"> {this.state.count} <small>{this.state.countsec/1000}s</small></h2>
-//     <MDBInput className="text-center" autoFocus style={inputStyle}  value={this.state.inputWord} type="text" onChange={(e)=>this.handleInputWord(e)} size="lg" />
-//     <h2 className="text-center pt-2 mb-2" style={{cursor:"pointer", position:"absolute", bottom:"170px"}} onClick={this.handleAgain}>Again?</h2>
-//     </>
-//   )
-// }
-
-// {
-//     this.state.perfect?
-//     (
-      
-//         <div className="text-center" style={{position:"absolute"}}>
-//           <MDBInput type="text" className="text-center" style={inputStyle} value={this.state.inputWord} onChange={(e)=>this.handleInputWord(e)} size="lg" />
-//           <h2>{this.state.selectedEnd}</h2>
-//           <MDBAnimation type="fadeIn" duration="1s" delay="2s">
-//           {/* Here is the counter of flashes */}
-//           <h2 className="p-2">{this.state.count} flashes, {minute}:{second} Seconds</h2>
-//           <h2 style={{cursor:"pointer"}} onClick={this.resetState}>I want more</h2>
-//           </MDBAnimation>
-//         </div>
-//     ):
-//     (
-//         <></>
-//     )
-// }
-
-// {
-//   this.state.te?
-//   (
-//     <div>
-//       <h1>Thanks</h1>
-//     </div>
-//   ):
-//   (
-//     <></>
-//   )
-// }
-// </div> */}

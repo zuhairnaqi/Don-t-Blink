@@ -34,7 +34,11 @@ export default class extends Component {
             flashCount: 1,
 
             againSentenceMessage: false,
-            flashBannerTiming: 3800 // Flash one don't blink text banner timing
+            flashBannerTiming: 3800, // Flash one don't blink text banner timing,
+            inputStyle: {
+                color: 'white',
+                width: '1000px'
+            },
         }
     }
 
@@ -45,7 +49,7 @@ export default class extends Component {
         arrayOfSentences.forEach(val => {
             const sentence = val.trim();
             if (sentence) {
-                sentences.push(sentence);
+                sentences.push({ sentence, mastered: null, tried: false });
             }
         });
         this.setState({ sentences });
@@ -61,18 +65,21 @@ export default class extends Component {
         let createMultipleSentences = [...sentences];
         let signs = ['?', '.', '!'];
         signs.forEach(sign => {
-            createMultipleSentences.forEach((sentence, index) => {
+            createMultipleSentences.forEach((obj, index) => {
+                const sentence = obj.sentence;
                 if (sentence.includes(sign)) {
                     let sentenceList = sentence.split(sign);
                     let sentencesToAdd = [];
                     if (sentenceList.length > 1) {
                         sentenceList.forEach((sent, i) => {
                             if (sent.trim() && sent.trim().length > 2) {
+                                let value;
                                 if (i === sentenceList.length - 1) {
-                                    sentencesToAdd.push(sent.trim());
+                                    value = sent.trim();
                                 } else {
-                                    sentencesToAdd.push(sent.trim() + sign);
+                                    value = sent.trim() + sign;
                                 }
+                                sentencesToAdd.push({ sentence: value, mastered: null, tried: false });
                             }
                         })
                         console.log(sentencesToAdd, sign);
@@ -126,30 +133,58 @@ export default class extends Component {
                     timerTime: Date.now() - this.state.timerStart
                 });
             }, 10);
-            const s = this.state.sentences.length
-            if (s === this.state.in) {
+            // const s = this.state.sentences.length
+            // if (s === this.state.in) {
 
-            } else {
+            // } else {
                 this.setState({
                     in: this.state.in + 1,
-                    selectedNote: this.state.sentences[sentenceIndex],
+                    selectedNote: this.state.sentences[sentenceIndex].sentence,
                     // selectedNote: this.state.sentences[Math.floor(this.state.in)],
                 })
-            }
-        }, sentences[sentenceIndex].length * 20)
+            // }
+        }, sentences[sentenceIndex].sentence.length * 20)
     }
 
     handleInputWord = e => {
         const { sentences, sentenceIndex, selectedNote, count } = this.state;
+        //Here is the color validaiton(don't touch anything here)
+        let inputStyle = {
+            color: 'white',
+            width: '1000px'
+        };
+        let inputText = e.target.value.trim().split(" ");
+
+        for (var i = 0; i < inputText.length; i++) {
+            if (this.state.selectedNote.includes(inputText[i]) === true) {
+                if (e.target.value.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])) {
+                    inputStyle = {
+                        color: 'blue'
+                    };
+                } else {
+                    inputStyle = {
+                        color: 'yellow'
+                    };
+                }
+            } else {
+                inputStyle = {
+                    color: 'white'
+                };
+            }
+        }
         if (e.target.value === selectedNote) {
             let index = sentenceIndex + 1;
             let isFlashUsed = count > 1;
             if (isFlashUsed) {
-                const repeatSentence = sentences.splice(sentenceIndex, 1);
-                sentences.push(...repeatSentence);
+                const repeatSentence = sentences.splice(sentenceIndex, 1)[0];
+                repeatSentence.mastered = false;
+                repeatSentence.tried = true;
+                sentences.push(repeatSentence);
                 index -= 1;
+            } else if (sentences[sentenceIndex]) {
+                sentences[sentenceIndex].mastered = true;
+                sentences[sentenceIndex].tried = true;
             }
-            console.log(index, sentences);
             this.setState({
                 perfect: true,
                 inputWord: e.target.value,
@@ -158,12 +193,14 @@ export default class extends Component {
                 sentences,
                 sentenceIndex: index,
                 againSentenceMessage: isFlashUsed,
+                inputStyle,
             })
             clearInterval(this.timer);
         } else {
             this.setState({
                 againHidden: false,
-                inputWord: e.target.value
+                inputWord: e.target.value,
+                inputStyle,
             })
         }
     }
@@ -208,6 +245,7 @@ export default class extends Component {
             flashCount: 1,
             againSentenceMessage: false
         })
+        console.log(this.state);
     }
 
 
@@ -219,44 +257,29 @@ export default class extends Component {
             sentences,
             sentenceIndex,
             inputWord,
+            inputStyle,
             timerTime,
             flashCount,
             againSentenceMessage
         } = this.state;
+        console.log(sentences);
         // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
         let second = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2);
         let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
         // let hour = ("0" + Math.floor(timerTime / 3600000)).slice(-2);
 
-        //Here is the color validaiton(don't touch anything here)
-
-        let inputStyle = {
-            color: 'white',
-            width: '1000px'
-        };
-        let inputText = this.state.inputWord.split(" ")
-
-        for (var i = 0; i < inputText.length; i++) {
-            if (this.state.selectedNote.includes(inputText[i]) === true) {
-
-                if (this.state.inputWord.indexOf(inputText[i]) === this.state.selectedNote.indexOf(inputText[i])) {
-
-                    inputStyle = {
-                        color: 'blue'
-                    };
-                } else {
-
-                    inputStyle = {
-                        color: 'yellow'
-                    };
-                }
+        let [ notTriedSentencesCount, notMasteredCount, masteredCount ] = [ 0, 0, 0 ];
+        sentences.forEach(obj => {
+            if (!obj.tried) {
+                ++notTriedSentencesCount;
             } else {
-
-                inputStyle = {
-                    color: 'white'
-                };
+                if (obj.mastered) {
+                    ++masteredCount;
+                } else if (obj.mastered === false) {
+                    ++notMasteredCount;
+                }
             }
-        }
+        })
         return (
             <div>
                 {showSection === 0 && <div>
@@ -286,7 +309,7 @@ export default class extends Component {
 
                 {/* Question section */}
                 {showSection === 2 && hideReady && <div>
-                    <h2 style={{ cursor: "pointer" }}>{sentences[sentenceIndex]}</h2>
+                    <h2 style={{ cursor: "pointer" }}>{sentences[sentenceIndex].sentence}</h2>
                 </div>}
 
                 {/* Answering section */}
@@ -297,6 +320,9 @@ export default class extends Component {
                 </div>}
 
                 {this.state.perfect && <div className="text-center">
+                    <h2 className="count">
+                        {notTriedSentencesCount} {notMasteredCount} {masteredCount}/{sentences.length}
+                    </h2>
                     <MDBInput type="text" className="text-center" style={inputStyle} value={this.state.inputWord} onChange={(e) => this.handleInputWord(e)} size="lg" />
                     <h2>{this.state.selectedEnd}</h2>
                     {againSentenceMessage && <h2>but you'll see it again soon</h2>}
