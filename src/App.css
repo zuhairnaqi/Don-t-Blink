@@ -59,7 +59,7 @@ background-color: #00000000 !important;
   text-align: center;
   display: inline-block;
   color: hsla(0,0%,0%,0);
-  cursor: pointer;
+  cursor: none;
 }
 
 
@@ -116,7 +116,7 @@ background-color: #00000000 !important;
   cursor: none;
 }
 
-/* .os-phrases h2:nth-child(4){
+.os-phrases h2:nth-child(4){
   animation-name: FadeIn;
   animation-duration: 5s;
   animation-timing-function: linear;
@@ -125,7 +125,7 @@ background-color: #00000000 !important;
   animation-direction: normal;
   animation-fill-mode: forwards;
   animation-play-state: none;
-} */
+}
 
 
 
