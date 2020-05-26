@@ -9,7 +9,10 @@
     "mdbreact": "^4.25.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "prismjs": "^1.20.0",
+    "react-router-dom": "^5.2.0",
+    "react-simple-code-editor": "^0.11.0"
   },
   "scripts": {
     "start": "react-scripts start",

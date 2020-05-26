@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import { MDBInput, MDBBtn, MDBAnimation } from "mdbreact"
+import { MDBInput, MDBBtn, MDBAnimation, MDBRow, MDBContainer, MDBCol, MDBAlert, MDBListGroupItem, MDBListGroup } from "mdbreact"
 import './input.css';
 import '../../App.css';
+import AlertMessage from '../Alert';
+import VisualizerComponent from '../Visualization';
+import { Songs } from '../../songs';
+import Modal from '../modal';
+import { Link } from 'react-router-dom'
 
 export default class extends Component {
     constructor(props) {
@@ -34,36 +39,87 @@ export default class extends Component {
             flashCount: 1,
 
             againSentenceMessage: false,
-            flashBannerTiming: 3800, // Flash one don't blink text banner timing,
+            flashBannerTiming: 3800, // Flash one don't blink text banner timing
             inputStyle: {
-                color: 'white',
-                width: '1000px'
+                color: 'black'
             },
+            alert: '',
+            textToLearn: ''
         }
+    }
+
+    componentDidMount() {
+        let { textToLearn } = this.props;
+
+        if (textToLearn) {
+            this.setState({ inputValue: textToLearn })
+        }
+    }
+    learnAgain = () => {
+        this.setState({
+            inputValue: '', // Paragraph input in which user add paragrah to learn
+            sentences: [], // separated sentences
+            showSection: 0, // show respective containers
+            hideReady: true, // Show Ready text
+            sentenceIndex: 0, // Sentence index shows the current sentence
+            inputWord: '', // the input which user is answering while learning
+
+            per: ['perfect', 'amazing', 'flawless'],
+            selectedNote: "",
+
+            //Here is the counter of flashes and length of the first flash states
+            count: 1,
+            countsec: 200,
+            perfect: false,
+            inputHidden: true,
+            againHidden: true,
+            showWord: false,
+            timerOn: false,
+            timerStart: 0,
+            timerTime: 0,
+            color: "white",
+            tryAgain: false,
+            in: 0,
+            te: false,
+            flashCount: 1,
+
+            againSentenceMessage: false,
+            flashBannerTiming: 3800 // Flash one don't blink text banner timing
+        })
     }
 
     learnIt = () => {
         const { inputValue } = this.state;
         const arrayOfSentences = inputValue.split('\n');
         let sentences = [];
-        arrayOfSentences.forEach(val => {
-            const sentence = val.trim();
-            if (sentence) {
-                sentences.push({ sentence, mastered: null, tried: false });
-            }
-        });
-        this.setState({ sentences });
-        console.log(sentences);
+        if (inputValue.length !== 0) {
+
+            arrayOfSentences.forEach(val => {
+                const sentence = val.trim();
+                if (sentence) {
+                    sentences.push({ sentence, mastered: null, tried: false });
+                }
+            });
+            this.setState({ sentences });
+        } else {
+            this.setState({ alert: 'Please add some text or paste it' })
+        }
     }
 
     detectSign = () => {
-        const { sentences } = this.state;
+        const { sentences, inputValue } = this.state;
+
         if (sentences.length === 0) {
-            alert('Please split it first');
+            this.setState({ alert: 'Please split it first' });
+            setTimeout(() => this.setState({ alert: '' }), 1000)
+            return;
+        } else if (inputValue.length === 0) {
+            this.setState({ alert: 'Please add some text or paste it' });
+            setTimeout(() => this.setState({ alert: '' }), 1000)
             return;
         }
         let createMultipleSentences = [...sentences];
-        let signs = ['?', '.', '!'];
+        let signs = ['?', '.', '!', ','];
         signs.forEach(sign => {
             createMultipleSentences.forEach((obj, index) => {
                 const sentence = obj.sentence;
@@ -82,22 +138,28 @@ export default class extends Component {
                                 sentencesToAdd.push({ sentence: value, mastered: null, tried: false });
                             }
                         })
-                        console.log(sentencesToAdd, sign);
                         createMultipleSentences.splice(index, 1);
                         sentencesToAdd.forEach(value => createMultipleSentences.splice(index, 0, value))
                     }
                 }
             })
         })
-        console.log(createMultipleSentences);
         this.setState({ sentences: createMultipleSentences })
     }
 
     startLearning = () => {
-        if (this.state.sentences.length === 0) {
-            alert('Please split it first');
+
+        if (this.state.inputValue.length === 0) {
+            this.setState({ alert: 'Please add some text or paste it' });
+            setTimeout(() => this.setState({ alert: '' }), 1000)
         } else {
-            this.setState({ showSection: 1, hideReady: false })
+
+            if (this.state.sentences.length === 0) {
+                this.setState({ alert: 'Please split it first' });
+                setTimeout(() => this.setState({ alert: '' }), 1000)
+            } else {
+                this.setState({ showSection: 1, hideReady: false })
+            }
         }
     }
 
@@ -137,11 +199,11 @@ export default class extends Component {
             // if (s === this.state.in) {
 
             // } else {
-                this.setState({
-                    in: this.state.in + 1,
-                    selectedNote: this.state.sentences[sentenceIndex].sentence,
-                    // selectedNote: this.state.sentences[Math.floor(this.state.in)],
-                })
+            this.setState({
+                in: this.state.in + 1,
+                selectedNote: this.state.sentences[sentenceIndex].sentence,
+                // selectedNote: this.state.sentences[Math.floor(this.state.in)],
+            })
             // }
         }, sentences[sentenceIndex].sentence.length * 20)
     }
@@ -150,8 +212,7 @@ export default class extends Component {
         const { sentences, sentenceIndex, selectedNote, count } = this.state;
         //Here is the color validaiton(don't touch anything here)
         let inputStyle = {
-            color: 'white',
-            width: '1000px'
+            color: 'black',
         };
         let inputText = e.target.value.trim().split(" ");
 
@@ -168,7 +229,7 @@ export default class extends Component {
                 }
             } else {
                 inputStyle = {
-                    color: 'white'
+                    color: 'black'
                 };
             }
         }
@@ -193,20 +254,19 @@ export default class extends Component {
                 sentences,
                 sentenceIndex: index,
                 againSentenceMessage: isFlashUsed,
-                inputStyle,
+                inputStyle
             })
             clearInterval(this.timer);
         } else {
             this.setState({
                 againHidden: false,
                 inputWord: e.target.value,
-                inputStyle,
+                inputStyle
             })
         }
     }
 
     handleAgain = () => {
-        console.log(this.state.sentenceIndex);
         this.setState({ showSection: 1, flashCount: this.state.flashCount + 1 })
         setTimeout(() => {
             //Here is the counter of flashes and length of the first flash logic
@@ -245,10 +305,11 @@ export default class extends Component {
             flashCount: 1,
             againSentenceMessage: false
         })
-        console.log(this.state);
     }
 
-
+    addTextToLearn = (text) => {
+        this.setState({ inputValue: text })
+    }
     render() {
         const {
             inputValue,
@@ -257,18 +318,19 @@ export default class extends Component {
             sentences,
             sentenceIndex,
             inputWord,
-            inputStyle,
             timerTime,
             flashCount,
+            inputStyle,
             againSentenceMessage
         } = this.state;
-        console.log(sentences);
+
         // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
         let second = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2);
         let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
         // let hour = ("0" + Math.floor(timerTime / 3600000)).slice(-2);
 
-        let [ notTriedSentencesCount, notMasteredCount, masteredCount ] = [ 0, 0, 0 ];
+
+        let [notTriedSentencesCount, notMasteredCount, masteredCount] = [0, 0, 0];
         sentences.forEach(obj => {
             if (!obj.tried) {
                 ++notTriedSentencesCount;
@@ -280,27 +342,69 @@ export default class extends Component {
                 }
             }
         })
+
         return (
-            <div>
-                {showSection === 0 && <div>
-                    <MDBInput
-                        type="textarea"
-                        autoFocus
-                        size="lg"
-                        className="text-center inputStyle"
-                        value={inputValue}
-                        placeholder="Paste your text you want to learn. Press “split” and then “learn it!”"
-                        onChange={event => this.setState({ inputValue: event.target.value })}
-                    />
-                    <div className="buttonsContainer">
-                        <MDBBtn color="primary" outline onClick={() => this.detectSign()}>Detect Sign</MDBBtn>
-                        <MDBBtn color="primary" outline onClick={() => this.learnIt()}>Split</MDBBtn>
-                    </div>
-                    <div className="success_btn">
-                        <MDBBtn color="success" outline onClick={() => this.startLearning()}>Learn it!</MDBBtn>
-                    </div>
-                </div>}
-                <h2 style={{ cursor: "pointer" }} onClick={this.readyLearningSession} hidden={this.state.hideReady}>Ready?</h2>
+            <MDBContainer>
+                {showSection === 0 ? <p className="info_text" >Line breaks should be included with each sentence</p> : null}
+                <MDBRow>
+                    <MDBCol size={window.innerWidth > 900 ? '6' : '12'} style={{ textAlign: 'center', marginBottom: 20 }}>
+
+                        {/* {!this.state.perfect ?
+                    <VisualizerComponent audio={'start'} fillColor={'#010b13'} />
+                    : (this.state.count === 1 ?
+                        <VisualizerComponent audio={'perfect'} fillColor={'orange'} />
+                        : <VisualizerComponent audio={'finish'} fillColor={'purple'} />)} */}
+
+                        {this.state.alert.length > 0 ? <AlertMessage message={this.state.alert} /> : null}
+                        <br />
+                        {showSection === 0 &&
+                            <MDBInput
+                                type="textarea"
+                                autoFocus
+                                size="lg"
+                                className="text-center"
+                                value={inputValue}
+                                label="Paste anything you want to learn”"
+                                onChange={event => this.setState({ inputValue: event.target.value })}
+                            />}
+
+                        {showSection === 0 && <MDBRow>
+                            {/* <MDBCol size={'4'}>
+                                <MDBBtn color="black" outline={true} style={{ padding: '12px 20px' }} onClick={() => this.detectSign()}>Detect Sign</MDBBtn>
+                            </MDBCol> */}
+                            <MDBCol size={'12'}>
+                                <Link to="/editCode"  >  <MDBBtn color="success" outline={true}
+                                    // onClick={() => this.startLearning()} 
+                                    style={{ borderRadius: 50 }}>
+                                    Learn it!
+                                    </MDBBtn>
+                                </Link>
+                            </MDBCol>
+                            {/* <MDBCol size={'4'}>
+                                <MDBBtn color="black" outline={true} onClick={() => this.learnIt()}>Split it</MDBBtn>
+                            </MDBCol> */}
+                        </MDBRow>}
+                    </MDBCol>
+                    <MDBCol size={window.innerWidth > 900 ? '6' : '12'} style={{ textAlign: 'center' }} >
+
+                        {/* Content Section Starts from here */}
+                        {showSection === 0 && <div className="content"
+                        // style={{ background: 'black', position: 'fixed', zIndex: 9999, left: 0, right: 0, padding: 10 }}
+                        >
+                            <h1 style={{ textAlign: 'center', padding: '10px 0' }}>Learn one of these contents:</h1>
+                            <MDBContainer>
+                                <MDBListGroup style={{ width: '100%', cursor: 'pointer' }}>
+                                    {Songs.map(song => <MDBListGroupItem key={song.id} onClick={() => {
+                                        this.props.toggle()
+                                        this.props.modalIdFunc(song.id)
+                                    }} > {song.title} </MDBListGroupItem>)}
+                                </MDBListGroup>
+                            </MDBContainer>
+                            {this.props.modal ? <Modal texttolearn={this.addTextToLearn} move={false} modalId={this.props.modalId} toggle={this.props.toggle} modal={this.props.modal} /> : null}
+                        </div>}
+                    </MDBCol>
+                </MDBRow>
+                <h2 className="ready" onClick={this.readyLearningSession} hidden={this.state.hideReady}>Ready?</h2>
 
                 {/* First flash section */}
                 {showSection === 1 && hideReady && <div className="os-phrases">
@@ -309,7 +413,7 @@ export default class extends Component {
 
                 {/* Question section */}
                 {showSection === 2 && hideReady && <div>
-                    <h2 style={{ cursor: "pointer" }}>{sentences[sentenceIndex].sentence}</h2>
+                    <h1 className="pb-2" style={{ position: "fixed", left: '0', right: 0, top: '15rem', bottom: 0, textAlign: 'center', margin: '0 auto', zIndex: 9999, fontSize: "3.35rem" }}>{sentences[sentenceIndex].sentence}</h1>
                 </div>}
 
                 {/* Answering section */}
@@ -330,14 +434,16 @@ export default class extends Component {
                         {/* Here is the counter of flashes */}
                         <h2 className="p-2">{this.state.count} flashes, {minute}:{second} Seconds</h2>
                         {sentences[sentenceIndex] !== undefined ?
-                            <h2 style={{ cursor: "pointer" }} onClick={this.resetState}>I want more</h2> :
+                            <MDBBtn outline={true} color="black" style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.resetState}>I want more</MDBBtn> :
                             <div>
                                 <h2 style={{ cursor: "pointer" }}>Good Job</h2>
-                                <h2 style={{ cursor: "pointer" }}>you learnt {sentences.length} sentences!</h2>
+                                <h2 style={{ cursor: "pointer" }}>you have learned {sentences.length} {sentences.length > 0 ? 'sentences' : 'sentence'}!</h2>
+                                <MDBBtn color="success" outline={true} onClick={() => this.learnAgain()}>Learn it!</MDBBtn>
                             </div>}
                     </MDBAnimation>
                 </div>}
-            </div>
+
+            </MDBContainer>
         )
     }
 }
