@@ -45,16 +45,20 @@ class EditCode extends Component {
 			firebase.firestore().collection('sentences').doc(this.props.match.params.id).get()
 			.then(response => {
 				const data = response.data();
-				let code = '', exceed = false;
-				for (const obj of data.sentences) {
-					code += obj.sentence + '\n';
-					if (obj.sentence.length >= 40) {
-						exceed = true;
-					} else {
-						exceed = false;
+				if (data) {
+					let code = '', exceed = false;
+					for (const obj of data.sentences) {
+						code += obj.sentence + '\n';
+						if (obj.sentence.length >= 40) {
+							exceed = true;
+						} else {
+							exceed = false;
+						}
 					}
+					this.setState({ sentences, code, showEditor: true, exceed, isShareLink: true });
+				} else {
+					this.props.history.push('/');
 				}
-				this.setState({ sentences, code, showEditor: true, exceed, isShareLink: true });
 			})
 		} else {
 			this.setState({ showEditor: true });
@@ -99,8 +103,6 @@ class EditCode extends Component {
 				}
 			}
 		}
-
-
 		this.props.setSentences(sentences);
 		this.props.history.push('learning-session');
 	};

@@ -4,9 +4,7 @@ import { Link } from 'react-router-dom'
 import './style.css';
 import { connect } from 'react-redux';
 import AlertMessage from '../../components/Alert';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import firebase from '../../Config/firebaseConfig';
-import baseURL from '../../Config/baseURL';
 
 class Result extends Component {
     constructor(props) {
@@ -44,12 +42,12 @@ class Result extends Component {
             firebase.firestore().collection('sentences').add({
                 sentences: this.props.sentences
             }).then(resp => {
-                this.setState({ shareUrl: baseURL + 'editCode/' + resp.id, copied: true})
+                this.setState({ shareUrl: window.location.origin + '/editCode' + resp.id, copied: true})
                 setTimeout(() => this.setState({ copied: false }), 2000)
             })
         } else {
             this.setState({ copied: true})
-            setTimeout(() => this.setState({ copied: false }), 5000)
+            setTimeout(() => this.setState({ copied: false }), 15000)
         }
     }
     render() {
