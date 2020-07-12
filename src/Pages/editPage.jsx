@@ -12,6 +12,7 @@ import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import AlertMessage from '../components/Alert'
+import firebase from '../Config/firebaseConfig';
 
 class EditCode extends Component {
 	constructor() {
@@ -22,23 +23,39 @@ class EditCode extends Component {
 			showEditor: false,
 			exceed: false,
 			alert: '',
-			sentencesLength: 0
+			sentencesLength: 0,
+			isShareLink: false
 		};
 	}
 	componentDidMount() {
 		const { sentences } = this.props;
 
 		if (sentences.length > 0) {
-			let code = '';
+			let code = '', exceed = false;
 			for (const obj of sentences) {
 				code += obj.sentence + '\n';
 				if (obj.sentence.length >= 40) {
-					this.setState({ exceed: true })
+					exceed = true;
 				} else {
-					this.setState({ exceed: false })
+					exceed = false;
 				}
 			}
-			this.setState({ sentences, code, showEditor: true });
+			this.setState({ sentences, code, showEditor: true, exceed });
+		} else if(this.props.match.params.id) {
+			firebase.firestore().collection('sentences').doc(this.props.match.params.id).get()
+			.then(response => {
+				const data = response.data();
+				let code = '', exceed = false;
+				for (const obj of data.sentences) {
+					code += obj.sentence + '\n';
+					if (obj.sentence.length >= 40) {
+						exceed = true;
+					} else {
+						exceed = false;
+					}
+				}
+				this.setState({ sentences, code, showEditor: true, exceed, isShareLink: true });
+			})
 		} else {
 			this.setState({ showEditor: true });
 			this.props.history.push('/')
@@ -105,6 +122,7 @@ class EditCode extends Component {
 	}
 
 	render() {
+		const { isShareLink } = this.state;
 		let options = {
 			lineNumbers: true,
 		};
@@ -179,11 +197,19 @@ class EditCode extends Component {
 						style={{ marginBottom: 20, marginTop: 40, minHeight: 220 }}
 					>
 						<div style={{ textAlign: 'center' }}>
-							<h6>
-								You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to
-							add a line. Remove things you don't want to learn.
-						</h6>
-							<h6>Your job is to master this text. You must write all of the lines after the first flash.</h6>
+							{isShareLink ? (
+								<h6>Someone wants you to learn the text from this box. Make them proud.
+								Each sentence from the box will blink very quickly.
+								Your job is to remember it and write it down perfectly.
+								It is simple but very effective way to learn how to write and memorize text.
+								Good luck!</h6>
+							) : (
+								<>
+									<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to
+									add a line. Remove things you don't want to learn.</h6>
+									<h6>Your job is to master this text. You must write all of the lines after the first flash.</h6>
+								</>
+							)}
 
 						</div>
 						{this.state.showEditor && <CodeMirror

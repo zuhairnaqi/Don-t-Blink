@@ -5,6 +5,8 @@ import './style.css';
 import { connect } from 'react-redux';
 import AlertMessage from '../../components/Alert';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import firebase from '../../Config/firebaseConfig';
+import baseURL from '../../Config/baseURL';
 
 class Result extends Component {
     constructor(props) {
@@ -13,7 +15,8 @@ class Result extends Component {
             openNav: false,
             copied: false,
             isLastSkipped: false,
-            sentencesLearned: 0
+            sentencesLearned: 0,
+            shareUrl: ''
         }
     }
     SideBar = () => {
@@ -36,11 +39,24 @@ class Result extends Component {
         }
         this.setState({ sentencesLearned: count, isLastSkipped })
     }
+    shareSet = () => {
+        if (!this.state.shareUrl) {
+            firebase.firestore().collection('sentences').add({
+                sentences: this.props.sentences
+            }).then(resp => {
+                this.setState({ shareUrl: baseURL + 'editCode/' + resp.id, copied: true})
+                setTimeout(() => this.setState({ copied: false }), 2000)
+            })
+        } else {
+            this.setState({ copied: true})
+            setTimeout(() => this.setState({ copied: false }), 5000)
+        }
+    }
     render() {
-        let { sentencesLearned, isLastSkipped } = this.state;
+        let { sentencesLearned, isLastSkipped, shareUrl } = this.state;
 
         return (<>
-            {this.state.copied && <AlertMessage message={'Copy To Clipboard!!'} />}
+            {this.state.copied && <AlertMessage message={`Share this link: ${shareUrl}`} />}
             {/* navbar */}
             <MDBNavbar dark expand="md" fixed="top" >
                 <MDBNavbarBrand>
@@ -100,14 +116,19 @@ class Result extends Component {
                             Start a new set
                     </MDBBtn>
                         <h4 style={{ cursor: "pointer" }}>Don’t leave your friends stupid!</h4>
-                        <CopyToClipboard text={this.props.sentences.map(data => data.sentence).join('\n')}
+                        {/* <CopyToClipboard text={this.props.sentences.map(data => data.sentence).join('\n')}
                             onCopy={() => {
                                 this.setState({ copied: true })
                                 setTimeout(() => this.setState({ copied: false }), 2000)
                             }}
-                        >
-                            <MDBBtn style={{ borderRadius: 50 }} color="success" outline={true}>Share this set!</MDBBtn>
-                        </CopyToClipboard>
+                        > */}
+                            <MDBBtn
+                                style={{ borderRadius: 50 }}
+                                color="success"
+                                outline={true}
+                                onClick={this.shareSet}
+                            >Share this set!</MDBBtn>
+                        {/* </CopyToClipboard> */}
                     </div>}
             </div>
         </>)
