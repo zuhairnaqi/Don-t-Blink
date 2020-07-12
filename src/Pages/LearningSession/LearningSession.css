@@ -1,0 +1,25 @@
+.inputStyle { 
+    color: white !important;
+    width: 1000px !important;
+    padding-top: 10px !important;
+    overflow-y: auto !important;
+    line-height: initial !important;
+}
+
+.success_btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.main_container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.input-container {
+    border-bottom: 0.5px solid #000 !important;
+    box-shadow: 0 0px 0 0 #000 !important;
+ }

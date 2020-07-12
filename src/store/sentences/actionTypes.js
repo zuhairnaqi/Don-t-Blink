@@ -1,0 +1,2 @@
+export const GET_SENTENCES = 'GET_SENTENCES';
+export const SET_SENTENCES = 'SET_SENTENCES';
