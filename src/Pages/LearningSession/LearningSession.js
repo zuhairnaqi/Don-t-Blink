@@ -53,7 +53,8 @@ class LearningSession extends Component {
             },
             alert: '',
             textToLearn: '',
-            hardMode: false,
+            enableColor: false,
+            enableSound: false,
             startLearning: true,
             playSound: false,
             sentenceSkipped: 0
@@ -196,14 +197,31 @@ class LearningSession extends Component {
         }, time > 300 ? time : 300) // milliseconds on each word in flash 
     }
 
+    checkInputColor = enableColor => {
+        const { inputWord, selectedNote } = this.state;
+        if (enableColor) {
+            let inputStyle;
+            if (selectedNote.startsWith(inputWord)) {
+                inputStyle = {
+                    color: 'blue'
+                };
+            } else {
+                inputStyle = {
+                    color: 'black'
+                };
+            }
+            this.setState({ inputStyle })
+        }
+    }
+
     handleInputWord = e => {
-        const { sentences, sentenceIndex, selectedNote, count, hardMode } = this.state;
+        const { sentences, sentenceIndex, selectedNote, count, enableColor, enableSound } = this.state;
         //Here is the color validaiton(don't touch anything here)
         let inputStyle = {
             color: 'black',
         };
         let inputText = e.target.value;
-        if (!hardMode && selectedNote.startsWith(inputText)) {
+        if (enableColor && selectedNote.startsWith(inputText)) {
             inputStyle = {
                 color: 'blue'
             };
@@ -213,8 +231,7 @@ class LearningSession extends Component {
             };
         }
 
-        if (!hardMode) {
-
+        if (enableSound) {
             if (inputStyle.color === 'blue') {
                 this.play('PurrrSound');
             } else {
@@ -328,7 +345,8 @@ class LearningSession extends Component {
             flashCount,
             inputStyle,
             againSentenceMessage,
-            hardMode
+            enableColor,
+            enableSound,
         } = this.state;
 
         // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
@@ -438,12 +456,31 @@ class LearningSession extends Component {
                                     type='checkbox'
                                     className='custom-control-input'
                                     id='customSwitches'
-                                    checked={hardMode}
-                                    onChange={() => this.setState({ hardMode: !hardMode, inputStyle: { color: hardMode ? inputStyle.color : 'black' } })}
+                                    checked={enableColor}
+                                    onChange={() => {
+                                        this.setState({ enableColor: !enableColor })
+                                        this.checkInputColor(!enableColor);
+                                    }}
                                     readOnly
                                 />
                                 <label className='custom-control-label' htmlFor='customSwitches'>
-                                    Hard Mode
+                                    COLORS
+                            </label>
+                            </div>
+                            <div className='custom-control custom-switch'>
+                                <input
+                                    type='checkbox'
+                                    className='custom-control-input'
+                                    id='customSwitches1'
+                                    checked={enableSound}
+                                    onChange={() => {
+                                        this.setState({ enableSound: !enableSound })
+                                        this.checkInputColor(!enableColor);
+                                    }}
+                                    readOnly
+                                />
+                                <label className='custom-control-label' htmlFor='customSwitches1'>
+                                    SOUNDS
                             </label>
                             </div>
                         </div>
