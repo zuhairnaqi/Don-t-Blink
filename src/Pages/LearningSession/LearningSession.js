@@ -76,11 +76,14 @@ class LearningSession extends Component {
         }
     }
     play(musicName) {
+        let {enableSound} = this.state
+        if (enableSound) {
         this[musicName].play();
         setTimeout(() => {
             this[musicName].pause();
             this[musicName].currentTime = 0;
         }, 1200)
+        }
     }
 
     learnAgain = () => {
@@ -231,13 +234,13 @@ class LearningSession extends Component {
             };
         }
 
-        if (enableSound) {
+
             if (inputStyle.color === 'blue') {
                 this.play('PurrrSound');
             } else {
                 this.play('CatScreaming');
             }
-        }
+
         if (e.target.value === selectedNote) {
             let index = sentenceIndex + 1;
             let isFlashUsed = count > 1;
