@@ -10,7 +10,7 @@ export default class Modal extends Component {
 
         return (<>
             {modal ?
-                <MDBModal isOpen={modal} toggle={toggle}>
+                <MDBModal isOpen={modal} toggle={toggle} backdrop={true}  size="lg"  full-height  position="left">
                     <MDBModalHeader toggle={this.props.toggle}>
                         {Songs[modalId].title}
                     </MDBModalHeader>

@@ -12,7 +12,8 @@ import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import AlertMessage from '../components/Alert'
-import firebase from '../Config/firebaseConfig';
+import firebase from '../config/firebaseConfig';
+import baseURL from '../config/baseURL';
 
 class EditCode extends Component {
 	constructor() {
@@ -24,7 +25,10 @@ class EditCode extends Component {
 			exceed: false,
 			alert: '',
 			sentencesLength: 0,
-			isShareLink: false
+			isShareLink: false,
+			shareUrl: '',
+			copied: false,
+			URLload: false
 		};
 	}
 	componentDidMount() {
@@ -37,15 +41,14 @@ class EditCode extends Component {
 				if (obj.sentence.length >= 40) {
 					exceed = true;
 				} else {
-					exceed = false;
+					exceed = false
 				}
 			}
 			this.setState({ sentences, code, showEditor: true, exceed });
-		} else if(this.props.match.params.id) {
+		} else if (this.props.match.params.id) {
 			firebase.firestore().collection('sentences').doc(this.props.match.params.id).get()
-			.then(response => {
-				const data = response.data();
-				if (data) {
+				.then(response => {
+					const data = response.data();
 					let code = '', exceed = false;
 					for (const obj of data.sentences) {
 						code += obj.sentence + '\n';
@@ -56,10 +59,7 @@ class EditCode extends Component {
 						}
 					}
 					this.setState({ sentences, code, showEditor: true, exceed, isShareLink: true });
-				} else {
-					this.props.history.push('/');
-				}
-			})
+				})
 		} else {
 			this.setState({ showEditor: true });
 			this.props.history.push('/')
@@ -75,7 +75,7 @@ class EditCode extends Component {
 			setTimeout(() => this.setState({ alert: '' }), 1000);
 			return;
 		}
-		
+
 		let sentences = [];
 		let signs = ['\n', '?', '.', '!'];
 		for (let j = 0; j < code.length; j++) {
@@ -103,6 +103,8 @@ class EditCode extends Component {
 				}
 			}
 		}
+
+
 		this.props.setSentences(sentences);
 		this.props.history.push('learning-session');
 	};
@@ -122,20 +124,33 @@ class EditCode extends Component {
 			}, 2000)
 		}
 	}
-
+	shareSet = () => {
+		this.setState({ URLload: true })
+		if (!this.state.shareUrl) {
+			firebase.firestore().collection('sentences').add({
+				sentences: this.state.code
+			}).then(resp => {
+				this.setState({ shareUrl: baseURL + '/editCode/' + resp.id, copied: true , URLload: false})
+				setTimeout(() => this.setState({ copied: false }), 10000)
+			})
+		} else {
+			this.setState({ copied: true, URLload: false })
+			setTimeout(() => this.setState({ copied: false }), 10000)
+		}
+	}
 	render() {
-		const { isShareLink } = this.state;
 		let options = {
 			lineNumbers: true,
 		};
+		const { isShareLink, shareUrl, URLload } = this.state;
 
 		return (<div style={{ height: window.innerHeight }}>
-			{this.state.copied ? <AlertMessage message={'COPIED TO CLIPBOARD!'} /> : null}
+			{this.state.copied && <AlertMessage message={`Share this link:`} link={true} href={shareUrl} />}
 			{this.state.exceed ? <AlertMessage message={'One of your sentence is too long, try to make it short'} /> : null}
 			{/* navbar */}
 			<MDBNavbar dark expand="md" fixed="top" >
 				<MDBNavbarBrand>
-					<Link to="/"><strong className="dark-text">DO NOT BLINK</strong></Link>
+					<Link to="/"><img src={require('../assets/icons/logo.jpg')} style={{width: '50%'}}/></Link>
 				</MDBNavbarBrand>
 				<MDBNavbarNav right>
 					{window.innerWidth > 800 ? <>
@@ -200,19 +215,18 @@ class EditCode extends Component {
 					>
 						<div style={{ textAlign: 'center' }}>
 							{isShareLink ? (
-								<h6>Someone wants you to learn the text from this box. Make them proud.
-								Each sentence from the box will blink very quickly.
-								Your job is to remember it and write it down perfectly.
-								It is simple but very effective way to learn how to write and memorize text.
+								<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to									<h6>Someone wants you to learn the text from this box. Make them proud.
+								add a line. Remove things you don't want to learn.									Each sentence from the box will blink very quickly.
+						</h6>									Your job is to remember it and write it down perfectly.
+									<h6>Your job is to master this text. You must write all of the lines after the first flash.</h6>									It is simple but very effective way to learn how to write and memorize text.
 								Good luck!</h6>
 							) : (
-								<>
-									<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to
+									<>
+										<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to
 									add a line. Remove things you don't want to learn.</h6>
-									<h6>Your job is to master this text. You must write all of the lines after the first flash.</h6>
-								</>
-							)}
-
+										<h6>Your job is to master this text. You must write all of the lines after the first flash.</h6>
+									</>
+								)}
 						</div>
 						{this.state.showEditor && <CodeMirror
 							className="editor"
@@ -227,19 +241,17 @@ class EditCode extends Component {
 							<MDBBtn color="success" outline={true} onClick={() => this.splitSentences()}>
 								Start Learning
                         </MDBBtn>
-							<CopyToClipboard text={this.state.code}
-								onCopy={() => this.setState({ copied: true })}
-							>
-								<MDBBtn color="warning" outline={true}>
-									Share this set
-						</MDBBtn>
-							</CopyToClipboard>
+							{URLload ? 
+							<MDBBtn color="warning" outline={true} >{'  '}<i className="fa fa-spinner fa-spin" style={{padding: '0 30px'}}></i>{'  '}</MDBBtn> 
+							: <MDBBtn color="warning" outline={true} onClick={this.shareSet}>
+								Share this set
+						</MDBBtn>}
 						</div>
 					</MDBCol>
 
 				</MDBRow>
 			</MDBContainer>
-		</div>);
+		</div >);
 	}
 }
 

@@ -7,7 +7,6 @@ import '../../App.css';
 import AlertMessage from '../../components/Alert';
 import VisualizerComponent from '../../components/Visualization';
 import { Songs } from '../../songs';
-import Modal from '../../components/modal';
 import { connect } from 'react-redux';
 import CatScreaming from '../../Musics/cat-screaming.wav';
 import GoodSound from '../../Musics/good.wav';
@@ -15,6 +14,7 @@ import MasteredSound from '../../Musics/mastered.wav';
 import PurrrSound from '../../Musics/purrr.wav';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { setSentences } from '../../store/sentences/action'
+import { Instruction } from './instruction';
 
 class LearningSession extends Component {
     constructor(props) {
@@ -57,7 +57,9 @@ class LearningSession extends Component {
             enableSound: false,
             startLearning: true,
             playSound: false,
-            sentenceSkipped: 0
+            sentenceSkipped: 0,
+
+            HideAll: false
         }
         this.CatScreaming = new Audio(CatScreaming); // This audio for black input
         this.PurrrSound = new Audio(PurrrSound); // This audio for blue input
@@ -74,13 +76,33 @@ class LearningSession extends Component {
         } else {
             this.props.history.push('/')
         }
+
+    }
+    checkInputColor = enableColor => {
+        const { inputWord, selectedNote } = this.state;
+        if (enableColor) {
+            let inputStyle;
+            if (selectedNote.startsWith(inputWord)) {
+                inputStyle = {
+                    color: 'blue'
+                };
+            } else {
+                inputStyle = {
+                    color: 'black'
+                };
+            }
+            this.setState({ inputStyle })
+        }
     }
     play(musicName) {
-        this[musicName].play();
-        setTimeout(() => {
-            this[musicName].pause();
-            this[musicName].currentTime = 0;
-        }, 1200)
+        let {enableSound} = this.state
+        if (enableSound) {
+            this[musicName].play();
+            setTimeout(() => {
+                this[musicName].pause();
+                this[musicName].currentTime = 0;
+            }, 1200)
+        }
     }
 
     learnAgain = () => {
@@ -197,23 +219,6 @@ class LearningSession extends Component {
         }, time > 300 ? time : 300) // milliseconds on each word in flash 
     }
 
-    checkInputColor = enableColor => {
-        const { inputWord, selectedNote } = this.state;
-        if (enableColor) {
-            let inputStyle;
-            if (selectedNote.startsWith(inputWord)) {
-                inputStyle = {
-                    color: 'blue'
-                };
-            } else {
-                inputStyle = {
-                    color: 'black'
-                };
-            }
-            this.setState({ inputStyle })
-        }
-    }
-
     handleInputWord = e => {
         const { sentences, sentenceIndex, selectedNote, count, enableColor, enableSound } = this.state;
         //Here is the color validaiton(don't touch anything here)
@@ -231,12 +236,10 @@ class LearningSession extends Component {
             };
         }
 
-        if (enableSound) {
-            if (inputStyle.color === 'blue') {
-                this.play('PurrrSound');
-            } else {
-                this.play('CatScreaming');
-            }
+        if (inputStyle.color === 'blue') {
+            this.play('PurrrSound');
+        } else {
+            this.play('CatScreaming');
         }
         if (e.target.value === selectedNote) {
             let index = sentenceIndex + 1;
@@ -334,6 +337,7 @@ class LearningSession extends Component {
         }
 
     }
+
     render() {
         const {
             showSection,
@@ -347,6 +351,7 @@ class LearningSession extends Component {
             againSentenceMessage,
             enableColor,
             enableSound,
+            hideAll
         } = this.state;
 
         // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
@@ -367,12 +372,14 @@ class LearningSession extends Component {
                 }
             }
         })
+
+
         return (
             <>
                 {/* navbar */}
-                <MDBNavbar dark expand="md" fixed="top" >
+                <MDBNavbar dark expand="md" fixed="top" className={hideAll ? 'opa_hide' : 'opa_show'}>
                     <MDBNavbarBrand>
-                        <Link to="/"><strong className="dark-text">DO NOT BLINK</strong></Link>
+                        <Link to="/"><img src={require('../../assets/icons/logo.jpg')} style={{ width: '50%' }} /></Link>
                     </MDBNavbarBrand>
                     <MDBNavbarNav right>
                         {window.innerWidth > 800 ? <>
@@ -422,6 +429,11 @@ class LearningSession extends Component {
 
                 <MDBContainer className="main_container">
                     {this.state.alert.length > 0 ? <AlertMessage message={this.state.alert} /> : null}
+                    {/* instruction icon */}
+                    <div className={hideAll ? 'opa_hide instruction' : 'opa_show instruction'} >
+                        <ReactTooltip place="bottom" type="dark" effect="solid" />
+                        <i data-tip={Instruction} className='fa fa-info-circle' ></i>
+                    </div>
                     {this.state.startLearning ?
                         <div className="os-phrases" >
                             <h2 hidden={!this.state.startLearning}><span className="blinking">do not</span> blink</h2>
@@ -438,19 +450,10 @@ class LearningSession extends Component {
                         <h1 style={{ fontSize: "2rem", marginTop: 20, textAlign: 'center', fontWeight: 400 }}>{sentences[sentenceIndex] && sentences[sentenceIndex].sentence}</h1>}
 
                     {/* Count Section */}
-                    {hideReady && <>
+                    {hideReady && <div className={hideAll ? 'opa_hide counter_container' : 'opa_show counter_container'}>
                         <ReactTooltip place="bottom" type="dark" effect="solid" />
-                        <h2 className="left_count"  > <span data-tip={`This Was Flash ${this.state.count}`} >  {this.state.count} </span>  <span data-tip={`It Took ${this.state.countsec / 1000} seconds`} > &nbsp;{this.state.countsec / 1000}s</span> </h2>
-
-                        <div className="right_count">
-                            <h2 >
-                                <span data-tip={`${notTriedSentencesCount} more new`} >
-                                    {notTriedSentencesCount}
-                                </span>
-                                <span data-tip={`${notMasteredCount} to try again`}> &nbsp;{notMasteredCount} &nbsp; </span>
-                                <span data-tip={`${masteredCount} out of ${sentences.length} mastered`} > {masteredCount}/{sentences.length}</span>
-                            </h2>
-
+                        <div className="left_count"  >
+                            <h2> <span data-tip={`This Was Flash ${this.state.count}`} >  {this.state.count} </span>  <span data-tip={`It Took ${this.state.countsec / 1000} seconds`} > &nbsp;{this.state.countsec / 1000}s</span> </h2>
                             <div className='custom-control custom-switch'>
                                 <input
                                     type='checkbox'
@@ -467,7 +470,19 @@ class LearningSession extends Component {
                                     COLORS
                             </label>
                             </div>
+                        </div>
+
+                        <div className="right_count">
+                            <h2 >
+                                <span data-tip={`${notTriedSentencesCount} more new`} >
+                                    {notTriedSentencesCount}
+                                </span>
+                                <span data-tip={`${notMasteredCount} to try again`}> &nbsp;{notMasteredCount} &nbsp; </span>
+                                <span data-tip={`${masteredCount} out of ${sentences.length} mastered`} > {masteredCount}/{sentences.length}</span>
+                            </h2>
+
                             <div className='custom-control custom-switch'>
+                                {console.log(enableSound)}
                                 <input
                                     type='checkbox'
                                     className='custom-control-input'
@@ -475,7 +490,7 @@ class LearningSession extends Component {
                                     checked={enableSound}
                                     onChange={() => {
                                         this.setState({ enableSound: !enableSound })
-                                        this.checkInputColor(!enableColor);
+                                        // this.checkInputColor(!enableColor);
                                     }}
                                     readOnly
                                 />
@@ -484,19 +499,50 @@ class LearningSession extends Component {
                             </label>
                             </div>
                         </div>
-                    </>}
+                    </div>}
 
                     {/* Answering section */}
-                    {showSection === 3 && hideReady && <div>
-                        <MDBInput className="text-center input-container" autoFocus style={{ ...inputStyle, marginTop: '2em' }} value={inputWord} type="text" onChange={(e) => {
-                            this.handleInputWord(e)
-                        }} size="lg" />
-                        <h3 className="text-center pt-2 mb-2" style={{ cursor: "pointer" }} onClick={this.handleAgain}>one more flash</h3>
-                        <MDBBtn outline={true} color="black" className="skip" style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.SkipSentence}>Skip </MDBBtn>
+                    {showSection === 3 && hideReady && <div >
+                        <MDBInput
+                            className="text-center input-container"
+                            autoFocus
+                            style={{ ...inputStyle, marginTop: '2em' }}
+                            value={inputWord}
+                            type="text"
+                            onChange={(e) => {
+                                this.handleInputWord(e)
+                                this.setState({ hideAll: true })
+                            }}
+                            onMouseMove={() => {
+                                if (this.state.hideAll) {
+                                    this.setState({ hideAll: false })
+                                }
+                            }}
+                            onKeyUp={(e) => {
+                                if (e.keyCode === 13) {
+                                    this.SkipSentence()
+                                    this.setState({ alert: 'Skipped' })
+                                    setTimeout(() => this.setState({ alert: '' }), 2000)
+                                }
+                            }}
+                            size="lg"
+                        />
+                        <h3 className="text-center pt-2 mb-2" style={{ cursor: "pointer" }} onClick={this.handleAgain}>
+                            <ReactTooltip place="bottom" type="dark" effect="solid" />
+                            <i className="fa fa-repeat" data-tip={'one more flash'} ></i>
+                        </h3>
+                        <MDBBtn outline={true} color="black" className={hideAll ? 'opa_hide skip' : 'opa_show skip'} style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.SkipSentence}>Skip </MDBBtn>
                     </div>}
 
                     {this.state.perfect && hideReady && <div className="text-center">
-                        <MDBInput type="text" className="text-center input-container" style={inputStyle} value={this.state.inputWord} onChange={(e) => this.handleInputWord(e)} size="lg" />
+                        <MDBInput
+                            type="text"
+                            className="text-center input-container"
+                            style={inputStyle}
+                            value={this.state.inputWord}
+                            onChange={(e) => this.handleInputWord(e)}
+                            size="lg"
+                        />
                         <div className="bottom_message">
                             {againSentenceMessage ? <>
                                 <h2>Good</h2>
