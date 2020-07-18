@@ -1,5 +1,6 @@
 import React from 'react';
 import { MDBCol, MDBContainer, MDBRow } from 'mdbreact'
+import { Link } from 'react-router-dom';
 
 export default class Footer extends React.Component {
     render() {
@@ -7,20 +8,34 @@ export default class Footer extends React.Component {
             <MDBContainer >
                 <MDBRow >
                     <MDBCol sm={12} md={6} lg={4}>
-                        lorem ipsome Lorem Ipsom <br />
-                                    lorem ipsome Lorem Ipsom <br />
-                                    lorem ipsome Lorem Ipsom
-                            </MDBCol>
+                        <img src={require('../../assets/icons/logo2.png')} />
+                        <br />
+                        <small>Do Not Blink</small>
+                    </MDBCol>
                     <MDBCol sm={12} md={6} lg={4}>
-                        lorem ipsome Lorem Ipsom <br />
-                                    lorem ipsome Lorem Ipsom <br />
-                                    lorem ipsome Lorem Ipsom
-                            </MDBCol>
+                        <h4>Contact Us</h4>
+                        <hr />
+                        <p>
+                            <span style={{marginTop: 10}}><i className="fa fa-location-arrow" ></i> {' '} Somewhere around </span> <br />
+                            <span style={{marginTop: 10}}><i className="fa fa-phone" ></i> {' '}+9823 2378 2378</span> <br />
+                            <span style={{marginTop: 10}}><i className="fa fa-envelope" ></i>{' '} asd@gmail.com</span>
+                        </p>
+                    </MDBCol>
                     <MDBCol sm={12} md={12} lg={4}>
-                        lorem ipsome Lorem Ipsom <br />
-                                    lorem ipsome Lorem Ipsom <br />
-                                    lorem ipsome Lorem Ipsom
+                        <h4>Connect with us</h4>
+                        <hr />
+                        <MDBRow style={{marginTop: 35}}>
+                            <MDBCol sm={12} md={4} lg={4}>
+                                    <Link to="#!" className="social_btn" ><i className='fab fa-facebook-f' ></i></Link>
                             </MDBCol>
+                            <MDBCol sm={12} md={4} lg={4}>
+                                    <Link to="#!" className="social_btn"><i className='fab fa-twitter' ></i></Link>
+                            </MDBCol>
+                            <MDBCol sm={12} md={4} lg={4}>
+                                    <Link to="#!" className="social_btn" ><i className='fab fa-instagram' ></i></Link>
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBCol>
                 </MDBRow>
             </MDBContainer>
         </div>)

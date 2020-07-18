@@ -249,7 +249,7 @@ class App extends React.Component {
         {/* navbar */}
         <MDBNavbar color="#000000" dark expand="md" fixed="top" >
           <MDBNavbarBrand>
-            <Link to="/"><strong className="dark-text">DO NOT BLINK</strong></Link>
+            <Link to="/"><img src={require('./assets/icons/logo.jpg')} style={{width: '50%'}}/></Link>
           </MDBNavbarBrand>
           <MDBNavbarNav right>
             {window.innerWidth > 800 ? <>

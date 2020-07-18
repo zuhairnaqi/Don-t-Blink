@@ -3,6 +3,7 @@ import App from '../App';
 import '../App.css';
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import About from '../Pages/about'
+import EditCode from '../Pages/editPage'
 import Content from '../Pages/content';
 import LearningSession from '../Pages/LearningSession/LearningSession';
 import FullScreen from '../assets/icons/fullscreen.png'
@@ -41,15 +42,15 @@ export default class Routes extends Component {
                 <Route exact path="/" component={App} />
                 <Route exact path="/about" component={About} />
                 <Route exact path="/content" component={Content} />
-                <Route exact path="/editCode" component={EditPage} />
-                <Route exact path="/editCode:id" component={EditPage} />
+                <Route exact path="/editCode/" component={EditPage} />
+                <Route exact path="/editCode/:id" component={EditPage} />
                 <Route exact path="/learning-session" component={LearningSession} />
                 <Route exact path="/result-page" component={ResultPage} />
                 {/* <Route exact path="*" component={} /> */}
             </Switch>
             {fullscreenMode ? 
-            <img src={ExitFullScreen} alt="ExitFullScreen" className="fullscreen" onClick={this.disableFullScreen} /> :
-            <img src={FullScreen} alt="FullScreen" className="fullscreen"  onClick={this.enableFullScreen} />}
+            <img src={ExitFullScreen} alt="ExitFullScreen" className="fullscreen opacity_anim" onClick={this.disableFullScreen} /> :
+            <img src={FullScreen} alt="FullScreen" className="fullscreen opacity_anim"  onClick={this.enableFullScreen} />}
         </BrowserRouter>)
     }
 }
