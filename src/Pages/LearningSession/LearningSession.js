@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom'
 import './LearningSession.css';
 import '../../App.css';
 import AlertMessage from '../../components/Alert';
-import VisualizerComponent from '../../components/Visualization';
-import { Songs } from '../../songs';
 import { connect } from 'react-redux';
 import CatScreaming from '../../Musics/cat-screaming.wav';
 import GoodSound from '../../Musics/good.wav';
@@ -31,7 +29,7 @@ class LearningSession extends Component {
 
             //Here is the counter of flashes and length of the first flash states
             count: 1,
-            countsec: 200,
+            countsec: 0,
             perfect: false,
             inputHidden: true,
             againHidden: true,
@@ -47,7 +45,7 @@ class LearningSession extends Component {
             openNav: false,
             skipCount: 0,
             againSentenceMessage: false,
-            flashBannerTiming: 3000, // Flash one don't blink text banner timing
+            flashBannerTiming: 2000, // Flash one don't blink text banner timing
             inputStyle: {
                 color: 'black'
             },
@@ -69,14 +67,14 @@ class LearningSession extends Component {
 
     componentDidMount() {
         const { sentences } = this.props;
-
-        setTimeout(() => this.setState({ startLearning: false }), 4000)
         if (sentences && sentences.length > 0) {
             this.setState({ sentences });
         } else {
             this.props.history.push('/')
         }
-
+        setTimeout(() => {
+            this.setState({ startLearning: false });
+        }, 4000)
     }
     checkInputColor = enableColor => {
         const { inputWord, selectedNote } = this.state;
@@ -107,7 +105,6 @@ class LearningSession extends Component {
     }
 
     learnAgain = () => {
-
         this.setState({
             sentences: this.props.sentences || [], // separated sentences
             showSection: 1, // show respective containers
@@ -120,7 +117,7 @@ class LearningSession extends Component {
 
             //Here is the counter of flashes and length of the first flash states
             count: 1,
-            countsec: 200,
+            countsec: 0,
             perfect: false,
             inputHidden: true,
             againHidden: true,
@@ -134,7 +131,7 @@ class LearningSession extends Component {
             te: false,
             flashCount: 1,
             againSentenceMessage: false,
-            flashBannerTiming: 3000 // Flash one don't blink text banner timing
+            flashBannerTiming: 2000 // Flash one don't blink text banner timing
         })
     }
     SideBar = () => {
@@ -181,7 +178,9 @@ class LearningSession extends Component {
     }
 
     readyLearningSession = () => {
-        this.setState({ hideReady: true });
+        if (!this.state.hideReady) {
+            this.setState({ hideReady: true });
+        }
         setTimeout(() => {
             this.setState({ showSection: 2 });
             this.calculateFlashTiming();
@@ -193,8 +192,8 @@ class LearningSession extends Component {
         let time = sentences[sentenceIndex].sentence.length * 30;
 
         setTimeout(() => {
-            this.setState({ showSection: 3 });
             this.setState({
+                showSection: 3,
                 clickedReady: true,
                 selectedEnd: this.state.per[Math.floor(Math.random() *
                     this.state.per.length)],
@@ -204,19 +203,17 @@ class LearningSession extends Component {
                 inputWord: '',
                 showWord: false,
                 timerOn: true,
+                countsec: time,
                 timerTime: this.state.timerTime,
-                timerStart: Date.now() - this.state.timerTime
-
+                timerStart: Date.now() - this.state.timerTime,
+                in: this.state.in + 1,
+                selectedNote: this.state.sentences[sentenceIndex].sentence,
             })
             this.timer = setInterval(() => {
                 this.setState({
                     timerTime: Date.now() - this.state.timerStart
                 });
             }, 10);
-            this.setState({
-                in: this.state.in + 1,
-                selectedNote: this.state.sentences[sentenceIndex].sentence,
-            })
         }, time > 300 ? time : 300) // milliseconds on each word in flash 
     }
 
@@ -268,7 +265,7 @@ class LearningSession extends Component {
                 inputStyle,
             })
             clearInterval(this.timer);
-
+            this.enableWindowKeyboardListener();
         } else {
             this.setState({
                 againHidden: false,
@@ -282,7 +279,7 @@ class LearningSession extends Component {
         this.setState({ showSection: 1, flashCount: this.state.flashCount + 1 })
         setTimeout(() => {
             //Here is the counter of flashes and length of the first flash logic
-            var inc = 200 + this.state.countsec
+            var inc = this.state.countsec + 300;
             setTimeout(() => {
                 this.setState({
                     showSection: 3,
@@ -290,7 +287,7 @@ class LearningSession extends Component {
             }, inc)
             this.setState({
                 count: this.state.count + 1,
-                countsec: this.state.countsec + 300,
+                countsec: inc,
                 showSection: 2,
             })
         }, this.state.flashBannerTiming)
@@ -309,20 +306,19 @@ class LearningSession extends Component {
             timerOn: false,
             timerStart: 0,
             timerTime: 0,
-            countsec: 200,
+            countsec: 0,
             spans: [],
             showSection: 1,
-            hideReady: false,
+            // hideReady: false,
             flashCount: 1,
             againSentenceMessage: false
-        })
+        });
+        this.readyLearningSession();
     }
 
     SkipSentence = () => {
         let { sentences, sentenceIndex } = this.state;
-
         if (sentenceIndex === sentences.length - 1) {
-
             this.setState({
                 perfect: true,
                 timerOn: false,
@@ -337,6 +333,34 @@ class LearningSession extends Component {
             this.resetState();
         }
 
+    }
+
+    enableWindowKeyboardListener = () => {
+        window.addEventListener('keydown', this.windowKeyboardListener)
+    }
+    windowKeyboardListener = event => {
+        if (event.keyCode === 13) {
+            const { sentences, sentenceIndex } = this.state;
+            if (sentences[sentenceIndex] !== undefined) {
+                this.nextSentence()
+                return;
+            }
+            this.youLearnItButtonPressed()
+        }
+    }
+
+    disableWindowKeyboardListener = () => {
+        window.removeEventListener('keydown', this.windowKeyboardListener) 
+    }
+
+    nextSentence = () => {
+        this.resetState();
+        this.disableWindowKeyboardListener();
+    }
+    youLearnItButtonPressed = () => {
+        this.props.setSentences(this.state.sentences);
+        this.props.history.push('result-page');
+        this.disableWindowKeyboardListener();
     }
 
     render() {
@@ -439,8 +463,7 @@ class LearningSession extends Component {
                         <div className="os-phrases" >
                             <h2 hidden={!this.state.startLearning}><span className="blinking">do not</span> blink</h2>
                         </div> :
-                        <h2 className="ready" onClick={this.readyLearningSession} hidden={this.state.startLearning || this.state.hideReady}>Ready?</h2>}
-
+                        <h2 className="ready" onClick={this.readyLearningSession} hidden={this.state.hideReady}>Ready?</h2>}
                     {/* First flash section */}
                     {showSection === 1 && hideReady && <div className="os-phrases">
                         <h2 style={{ fontSize: "2rem", textAlign: 'center', fontWeight: 400, cursor: "pointer" }}>flash {flashCount}</h2>
@@ -454,7 +477,7 @@ class LearningSession extends Component {
                     {hideReady && <div className={hideAll ? 'opa_hide counter_container' : 'opa_show counter_container'}>
                         <ReactTooltip place="bottom" type="dark" effect="solid" />
                         <div className="left_count"  >
-                            <h2> <span data-tip={`This Was Flash ${this.state.count}`} >  {this.state.count} </span>  <span data-tip={`It Took ${this.state.countsec / 1000} seconds`} > &nbsp;{this.state.countsec / 1000}s</span> </h2>
+                            <h2> <span data-tip={`This Was Flash ${this.state.count}`} >  {this.state.count} </span>  <span data-tip={`It Took ${(this.state.countsec / 1000).toFixed(1)} seconds`} > &nbsp;{(this.state.countsec / 1000).toFixed(1)}s</span> </h2>
                             <div className='custom-control custom-switch'>
                                 <input
                                     type='checkbox'
@@ -483,7 +506,6 @@ class LearningSession extends Component {
                             </h2>
 
                             <div className='custom-control custom-switch'>
-                                {console.log(enableSound)}
                                 <input
                                     type='checkbox'
                                     className='custom-control-input'
@@ -557,14 +579,11 @@ class LearningSession extends Component {
                             </>}
                             {/* :  */}
                             {sentences[sentenceIndex] !== undefined ? <>
-                                <MDBBtn outline={true} color="black" style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.resetState}>Next Sentence</MDBBtn>
+                                <MDBBtn outline={true} color="black" style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.nextSentence}>Next Sentence</MDBBtn>
                             </> :
                                 <div>
                                     <h4 style={{ cursor: "pointer" }}>you have learned {masteredCount} {masteredCount > 1 ? 'sentences' : 'sentence'}!</h4>
-                                    <MDBBtn color="success" outline style={{ borderRadius: 50 }} onClick={() => {
-                                        this.props.setSentences(this.state.sentences)
-                                        this.props.history.push('result-page')
-                                    }}>YOU LEARNT IT!</MDBBtn>
+                                    <MDBBtn color="success" outline style={{ borderRadius: 50 }} onClick={this.youLearnItButtonPressed}>YOU LEARNT IT!</MDBBtn>
                                 </div>}
                         </MDBAnimation>
                     </div>}

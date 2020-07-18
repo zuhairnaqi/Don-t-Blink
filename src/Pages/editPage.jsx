@@ -12,8 +12,8 @@ import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import AlertMessage from '../components/Alert'
-import firebase from '../config/firebaseConfig';
-import baseURL from '../config/baseURL';
+import firebase from '../Config/firebaseConfig';
+import baseURL from '../Config/baseURL';
 
 class EditCode extends Component {
 	constructor() {
