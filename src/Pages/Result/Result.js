@@ -5,8 +5,8 @@ import './style.css';
 import { connect } from 'react-redux';
 import AlertMessage from '../../components/Alert';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import firebase from '../../config/firebaseConfig';
-import baseURL from '../../config/baseURL';
+import firebase from '../../Config/firebaseConfig';
+import baseURL from '../../Config/baseURL';
 
 class Result extends Component {
     constructor(props) {
@@ -26,7 +26,7 @@ class Result extends Component {
 			firebase.firestore().collection('sentences').add({
 				sentences: this.state.code
 			}).then(resp => {
-				this.setState({ shareUrl: baseURL + 'editCode/' + resp.id, copied: true , URLload: false})
+				this.setState({ shareUrl: baseURL + '/editCode/' + resp.id, copied: true , URLload: false})
 				setTimeout(() => this.setState({ copied: false }), 10000)
 			})
 		} else {
@@ -42,7 +42,6 @@ class Result extends Component {
     }
     componentDidMount() {
         let { sentences } = this.props
-        console.log(sentences);
 
         let count = 0;
         let isLastSkipped = false;
