@@ -96,13 +96,14 @@ class LearningSession extends Component {
     }
     play(musicName) {
         let {enableSound} = this.state
-        if (enableSound) {
+        if (!enableSound) {
+            return;
+        }
             this[musicName].play();
             setTimeout(() => {
                 this[musicName].pause();
                 this[musicName].currentTime = 0;
             }, 1200)
-        }
     }
 
     learnAgain = () => {
@@ -488,10 +489,7 @@ class LearningSession extends Component {
                                     className='custom-control-input'
                                     id='customSwitches1'
                                     checked={enableSound}
-                                    onChange={() => {
-                                        this.setState({ enableSound: !enableSound })
-                                        // this.checkInputColor(!enableColor);
-                                    }}
+                                    onChange={() => this.setState({ enableSound: !enableSound })}
                                     readOnly
                                 />
                                 <label className='custom-control-label' htmlFor='customSwitches1'>
