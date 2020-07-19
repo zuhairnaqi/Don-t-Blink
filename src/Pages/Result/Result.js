@@ -22,17 +22,17 @@ class Result extends Component {
     }
     shareSet = () => {
 		this.setState({ URLload: true })
-		if (!this.state.shareUrl) {
-			firebase.firestore().collection('sentences').add({
-				sentences: this.state.code
-			}).then(resp => {
-				this.setState({ shareUrl: baseURL + '/editCode/' + resp.id, copied: true , URLload: false})
-				setTimeout(() => this.setState({ copied: false }), 10000)
-			})
-		} else {
-			this.setState({ copied: true, URLload: false })
-			setTimeout(() => this.setState({ copied: false }), 10000)
+		if (this.state.shareUrl) {
+			this.setState({ copied: true, URLload: false });
+            setTimeout(() => this.setState({ copied: false }), 10000);
+            return;
 		}
+        firebase.firestore().collection('sentences').add({
+            sentences: this.props.sentences
+        }).then(resp => {
+            this.setState({ shareUrl: baseURL + '/editCode/' + resp.id, copied: true , URLload: false})
+            setTimeout(() => this.setState({ copied: false }), 10000)
+        })
 	}
     SideBar = () => {
         this.setState({ openNav: !this.state.openNav })
