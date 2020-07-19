@@ -78,19 +78,13 @@ class LearningSession extends Component {
     }
     checkInputColor = enableColor => {
         const { inputWord, selectedNote } = this.state;
-        if (enableColor) {
-            let inputStyle;
-            if (selectedNote.startsWith(inputWord)) {
-                inputStyle = {
-                    color: 'blue'
-                };
-            } else {
-                inputStyle = {
-                    color: 'black'
-                };
-            }
-            this.setState({ inputStyle })
+        let inputStyle = {
+            color: 'black'
+        };
+        if (enableColor && selectedNote.startsWith(inputWord)) {
+            inputStyle.color = 'blue';
         }
+        this.setState({ inputStyle })
     }
     play(musicName) {
         let {enableSound} = this.state
