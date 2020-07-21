@@ -124,11 +124,20 @@ class EditCode extends Component {
 			}, 2000)
 		}
 	}
-	shareSet = () => {
+		shareSet = () => {
 		this.setState({ URLload: true })
+		let newSentence = []
+		let sentence = this.state.code.split('\n');
+		sentence = sentence.filter(data => data.length !== 0)
+
+		sentence.forEach(data => {
+			if(data.length !== 0){
+				newSentence.push({sentence: data})
+			}
+		})
 		if (!this.state.shareUrl) {
 			firebase.firestore().collection('sentences').add({
-				sentences: this.state.code
+				sentences: newSentence
 			}).then(resp => {
 				this.setState({ shareUrl: baseURL + '/editCode/' + resp.id, copied: true , URLload: false})
 				setTimeout(() => this.setState({ copied: false }), 10000)
