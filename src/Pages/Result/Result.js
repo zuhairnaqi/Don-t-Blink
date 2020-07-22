@@ -61,7 +61,7 @@ class Result extends Component {
             {/* navbar */}
             <MDBNavbar dark expand="md" fixed="top" >
                 <MDBNavbarBrand>
-                    <Link to="/"><img src={require('../../assets/icons/logo.jpg')} style={{width: '50%'}}/></Link>
+                    <Link to="/"><img src={require('../../assets/icons/logo.jpg')} style={{width: '40%'}}/></Link>
                 </MDBNavbarBrand>
                 <MDBNavbarNav right>
                     {window.innerWidth > 800 ? <>
