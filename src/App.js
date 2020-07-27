@@ -3,7 +3,7 @@ import './App.css';
 import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBListGroup, MDBListGroupItem } from "mdbreact"
 import InputComponent from './components/InputComponent/InputComponent';
 import Footer from './components/footer/footer'
-import { Link } from 'react-router-dom';
+import {Navbar} from './components/navbar';
 
 class App extends React.Component {
   constructor(props) {
@@ -71,7 +71,7 @@ class App extends React.Component {
         timerTime: this.state.timerTime,
         timerStart: Date.now() - this.state.timerTime,
       })
-    }, 300)
+    }, 6000)
     this.setState({
       showReady: false,
       showWord: false
@@ -113,7 +113,7 @@ class App extends React.Component {
 
     setTimeout(() => {
       this.setState({ showIntroduction: false });
-    }, 10000)
+    }, 6000)
 
     window.addEventListener('scroll', this.UpdateOpacity)
     window.addEventListener('resize', this.UpdateDesktop)
@@ -247,56 +247,7 @@ class App extends React.Component {
       <>
 
         {/* navbar */}
-        <MDBNavbar color="#000000" dark expand="md" fixed="top" >
-          <MDBNavbarBrand>
-            <Link to="/"><img src={require('./assets/icons/logo.jpg')} style={{width: '40%'}}/></Link>
-          </MDBNavbarBrand>
-          <MDBNavbarNav right>
-            {window.innerWidth > 800 ? <>
-              <MDBNavLink to="/about" >About</MDBNavLink>
-              <MDBNavLink to="/content" >Content</MDBNavLink>
-              <MDBNavLink to="/" color="success" style={{ border: '2px solid #00c851', background: 'transparent', color: '#00c851', margin: '0px 8px', borderRadius: 3, padding: '8px 15px' }} onClick={() => this.routeToLearning()} >Learn</MDBNavLink>
-            </> : <MDBBtn outline={true} color="black" id="hamburgher" onClick={() => this.SideBar()}>
-                <MDBIcon size="md" icon="bars" />
-              </MDBBtn>}
-          </MDBNavbarNav>
-        </MDBNavbar>
-        {/* side navbar */}
-        {this.state.openNav ?
-          <MDBContainer>
-            <MDBSideNav
-              fixed={true}
-              slim={true}
-              hidden
-              triggerOpening={this.state.openNav}
-              breakWidth={1500}
-            >
-              <li style={{
-                padding: '30px 20px',
-                textAlign: 'center',
-                margin: '0 auto',
-              }}>
-                <Link to="/" > DO NOT BLINK </Link>
-                <MDBNavLink to="/" color="success" style={{ border: '2px solid #00c851', background: 'transparent', color: '#00c851', margin: '0px 8px', borderRadius: 3, padding: '8px 15px' }} onClick={() => {
-                  this.routeToLearning()
-                  this.SideBar()
-                }} >Learn It!</MDBNavLink>
-
-              </li>
-
-              <li >
-                <MDBNavLink to="/about" onClick={this.SideBar}>
-                  About
-                    </MDBNavLink>
-              </li>
-              <li >
-                <MDBNavLink to="/content" onClick={this.SideBar}>
-                  Content
-                    </MDBNavLink>
-              </li>
-            </MDBSideNav>
-          </MDBContainer>
-          : null}
+        <Navbar quit={false} />
         {/* nav and side bar ends here */}
 
         {/* Slider starts */}
@@ -319,13 +270,13 @@ class App extends React.Component {
                   navigate={this.props.history.push}
                   modal={this.state.modal} />
                 : <>
-                  {/* {showReady && <h2 className="ready" onClick={this.handleClick}>Ready?</h2>} */}
+                  {/* {showReady && <h2 className="ready" onClick={this.handleClick}>Ready?</h2>}
 
-                  {/* <h1 className="pb-2"  hidden={this.state.showWord}>{this.state.selectedNote}</h1> */}
-                  {/* {!this.state.inputHidden && <> */}
+                  <h1 className="pb-2"  hidden={this.state.showWord}>{this.state.selectedNote}</h1>
+                  {!this.state.inputHidden && <>
 
-                  {/* Here is the counter of flashes and length of the first flash view*/}
-                  {/* <h2 className="count"> {this.state.count} <small>{this.state.countsec / 1000}s</small></h2>
+                  Here is the counter of flashes and length of the first flash view
+                  <h2 className="count"> {this.state.count} <small>{this.state.countsec / 1000}s</small></h2>
                     <MDBContainer>
                       <MDBRow>
                         <MDBCol size={window.innerWidth > 900 ? '6' : '12'} style={{ textAlign: 'center', marginBottom: 20 }}>

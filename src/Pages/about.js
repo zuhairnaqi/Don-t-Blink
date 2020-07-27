@@ -1,8 +1,7 @@
 import React from 'react'
 import '../App.css';
 import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBSideNavLink, MDBSideNavCat, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBSideNavNav } from "mdbreact"
-import { BrowserRouter as Router, Link } from 'react-router-dom';
-
+import {Navbar} from '../components/navbar';
 export default class About extends React.Component {
     constructor(props) {
         super(props);
@@ -26,53 +25,8 @@ export default class About extends React.Component {
     render() {
 
         return <div>
-            {/* navbar */}
-            <MDBNavbar dark expand="md" fixed="top" >
-                <MDBNavbarBrand>
-                    <Link to="/"><img src={require('../assets/icons/logo.jpg')} style={{width: '40%'}}/></Link>
-                </MDBNavbarBrand>
-                <MDBNavbarNav right>
-                    {window.innerWidth > 800 ? <>
-                        <MDBNavLink className="active_links" to="/about" >About</MDBNavLink>
-                        <MDBNavLink to="/content" >Content</MDBNavLink>
-                        <MDBNavLink to="/" color="success" style={{ border: '2px solid #00c851', background: 'transparent', color: '#00c851', margin: '0px 8px', borderRadius: 3, padding: '8px 15px' }} onClick={() => this.props.history.push('/')} >Learn</MDBNavLink>
-                    </> : <MDBBtn outline={true} color="black" id="hamburgher" onClick={() => this.SideBar()}>
-                            <MDBIcon size="md" icon="bars" />
-                        </MDBBtn>}
-                </MDBNavbarNav>
-            </MDBNavbar>
-            {/* side navbar */}
-            {this.state.openNav ?
-                <MDBContainer>
-                    <MDBSideNav
-                        fixed={true}
-                        slim={true}
-                        hidden
-                        triggerOpening={this.state.openNav}
-                        breakWidth={1500}
-                    >
-                        <li style={{
-                            padding: '30px 20px',
-                            textAlign: 'center',
-                            margin: '0 auto',
-                        }}>
-                            <Link to="/" onClick={this.SideBar}> DO NOT BLINK </Link>
-                            <MDBNavLink to="/" color="success" style={{ border: '2px solid #00c851', background: 'transparent', color: '#00c851', margin: '0px 8px', borderRadius: 3, padding: '8px 15px' }} onClick={() => {
-                                this.SideBar()
-                                this.props.history.push('/')
-                            }} >Learn It!</MDBNavLink>
-
-                        </li>
-                        <li className="active_links">
-                            <MDBNavLink to="/about" onClick={this.SideBar}>About</MDBNavLink>
-                        </li>
-                        <li >
-                            <MDBNavLink to="/content" onClick={this.SideBar}>Content</MDBNavLink>
-                        </li>
-                    </MDBSideNav>
-                </MDBContainer>
-                : null}
-
+           {/* navbar */}
+           <Navbar quit={false} />
 
             <MDBContainer style={{ height: window.innerHeight - 200, marginTop: '20%' }}>
                 <MDBRow>

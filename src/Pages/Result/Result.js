@@ -7,6 +7,7 @@ import AlertMessage from '../../components/Alert';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import firebase from '../../Config/firebaseConfig';
 import baseURL from '../../Config/baseURL';
+import {Navbar} from '../../components/navbar';
 
 class Result extends Component {
     constructor(props) {
@@ -21,19 +22,19 @@ class Result extends Component {
         }
     }
     shareSet = () => {
-		this.setState({ URLload: true })
-		if (this.state.shareUrl) {
-			this.setState({ copied: true, URLload: false });
+        this.setState({ URLload: true })
+        if (this.state.shareUrl) {
+            this.setState({ copied: true, URLload: false });
             setTimeout(() => this.setState({ copied: false }), 10000);
             return;
-		}
+        }
         firebase.firestore().collection('sentences').add({
             sentences: this.props.sentences
         }).then(resp => {
-            this.setState({ shareUrl: baseURL + '/editCode/' + resp.id, copied: true , URLload: false})
+            this.setState({ shareUrl: baseURL + '/editCode' + resp.id, copied: true, URLload: false })
             setTimeout(() => this.setState({ copied: false }), 10000)
         })
-	}
+    }
     SideBar = () => {
         this.setState({ openNav: !this.state.openNav })
     }
@@ -59,50 +60,7 @@ class Result extends Component {
         return (<>
             {this.state.copied && <AlertMessage message={`Share this link:`} link={true} href={shareUrl} />}
             {/* navbar */}
-            <MDBNavbar dark expand="md" fixed="top" >
-                <MDBNavbarBrand>
-                    <Link to="/"><img src={require('../../assets/icons/logo.jpg')} style={{width: '40%'}}/></Link>
-                </MDBNavbarBrand>
-                <MDBNavbarNav right>
-                    {window.innerWidth > 800 ? <>
-                        <MDBNavLink to="/about" >About</MDBNavLink>
-                        <MDBNavLink to="/content" >Content</MDBNavLink>
-                    </> : <MDBBtn outline={true} color="black" id="hamburgher" onClick={() => this.SideBar()}>
-                            <MDBIcon size="md" icon="bars" />
-                        </MDBBtn>}
-                </MDBNavbarNav>
-            </MDBNavbar>
-            {/* side navbar */}
-            {this.state.openNav ?
-                <MDBContainer>
-                    <MDBSideNav
-                        fixed={true}
-                        slim={true}
-                        hidden
-                        triggerOpening={this.state.openNav}
-                        breakWidth={1500}
-                    >
-                        <li style={{
-                            padding: '30px 20px',
-                            textAlign: 'center',
-                            margin: '0 auto',
-                        }}>
-                            <Link to="/" onClick={this.SideBar}> DO NOT BLINK </Link>
-                        </li>
-                        <li >
-                            <MDBNavLink to="/about" onClick={this.SideBar}>
-                                About
-                    </MDBNavLink>
-                        </li>
-                        <li>
-                            <MDBNavLink to="/content" onClick={this.SideBar}>
-                                Content
-                    </MDBNavLink>
-                        </li>
-                    </MDBSideNav>
-                </MDBContainer>
-                : null}
-
+            <Navbar quit={true} />
             <div className="result_container">
                 {sentencesLearned == 0 ? <div>
                     <h4 style={{ cursor: "pointer" }}>You Haven't learned anything!</h4>

@@ -8,7 +8,7 @@ export default class Footer extends React.Component {
             <MDBContainer >
                 <MDBRow >
                     <MDBCol sm={12} md={6} lg={4}>
-                        <img src={require('../../assets/icons/logo2.png')} />
+                        <img src={require('../../assets/icons/logo2.png')} style={{width: '20%'}} />
                         <br />
                         <small>Do Not Blink</small>
                     </MDBCol>

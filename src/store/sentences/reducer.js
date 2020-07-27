@@ -2,6 +2,8 @@ import React from 'react';
 
 let initialState = {
     sentences: [],
+    mode: 'master',
+    visible: false
 }
 export default function counter(state, action) {
     switch(action.type) {
@@ -9,6 +11,18 @@ export default function counter(state, action) {
             return {
                 ...state,
                 sentences: action.payload.sentences
+            }
+        }
+        case 'SET_MODE': {
+            return {
+                ...state,
+                mode: action.payload.mode
+            }
+        }
+        case 'SET_VISIBILITY': {
+            return {
+                ...state,
+                visible: action.payload.visible
             }
         }
         default:

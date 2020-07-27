@@ -150,7 +150,7 @@ a.nav-link.Ripple-parent {
     animation-name: FadeIns;
     animation-duration: 2s;
     animation-timing-function: linear;
-    animation-delay: 0s;
+    animation-delay: 1.5s;
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-fill-mode: forwards;
@@ -162,7 +162,7 @@ a.nav-link.Ripple-parent {
     animation-name: FadeIns;
     animation-duration: 2s;
     animation-timing-function: linear;
-    animation-delay: 2.5s;
+    animation-delay: 3.5s;
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-fill-mode: forwards;
@@ -174,7 +174,7 @@ a.nav-link.Ripple-parent {
     animation-name: FadeIns;
     animation-duration: 2s;
     animation-timing-function: linear;
-    animation-delay: 5s;
+    animation-delay: 5.5s;
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-fill-mode: forwards;
@@ -600,12 +600,12 @@ button {
     .navbar {
         opacity: 1 !important;
     }
-    .counter_container {
+    /* .counter_container {
         left: 28% !important;
         bottom: 62px !important;
         width: 60% !important;
         opacity: 1 !important;
-    }
+    } */
     .left_count h2, .right_count h2, .right_count div, .left_count div {
         font-size: 16px !important;
         font-weight: bold;
@@ -616,3 +616,9 @@ button {
     
 }
 
+.css-1nq8m5d, .css-17l4ncr {
+    margin: 10px 0;
+}
+.react-switch-selector-wrapper {
+    margin-top: 0 !important;
+}

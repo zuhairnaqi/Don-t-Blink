@@ -7,14 +7,16 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers';
 import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBSideNavLink, MDBSideNavCat, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBSideNavNav } from 'mdbreact';
 import '../App.css';
 import { Link } from 'react-router-dom'
-import { setSentences } from '../store/sentences/action';
+import { setSentences, setMode } from '../store/sentences/action';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import AlertMessage from '../components/Alert'
 import firebase from '../Config/firebaseConfig';
 import baseURL from '../Config/baseURL';
-
+import { Navbar } from '../components/navbar';
+import Switch from '../components/switchSelector'
+import {Loader} from '../components/loader'
 class EditCode extends Component {
 	constructor() {
 		super();
@@ -28,9 +30,13 @@ class EditCode extends Component {
 			isShareLink: false,
 			shareUrl: '',
 			copied: false,
-			URLload: false
+			URLload: false,
+			mode: 'basic',
+			hideMessage: true,
+			loader: false
 		};
 	}
+
 	componentDidMount() {
 		const { sentences } = this.props;
 
@@ -46,6 +52,7 @@ class EditCode extends Component {
 			}
 			this.setState({ sentences, code, showEditor: true, exceed });
 		} else if (this.props.match.params.id) {
+			this.setState({loader: true })
 			firebase.firestore().collection('sentences').doc(this.props.match.params.id).get()
 				.then(response => {
 					const data = response.data();
@@ -58,7 +65,7 @@ class EditCode extends Component {
 							exceed = false;
 						}
 					}
-					this.setState({ sentences, code, showEditor: true, exceed, isShareLink: true });
+					this.setState({ sentences, code, showEditor: true, exceed, isShareLink: true, loader: false });
 				})
 		} else {
 			this.setState({ showEditor: true });
@@ -107,6 +114,7 @@ class EditCode extends Component {
 
 		this.props.setSentences(sentences);
 		this.props.history.push('learning-session');
+
 	};
 
 	ExceedAlert = (code) => {
@@ -124,118 +132,73 @@ class EditCode extends Component {
 			}, 2000)
 		}
 	}
-		shareSet = () => {
+	shareSet = () => {
 		this.setState({ URLload: true })
 		let newSentence = []
 		let sentence = this.state.code.split('\n');
 		sentence = sentence.filter(data => data.length !== 0)
 
 		sentence.forEach(data => {
-			if(data.length !== 0){
-				newSentence.push({sentence: data})
+			if (data.length !== 0) {
+				newSentence.push({ sentence: data })
 			}
 		})
 		if (!this.state.shareUrl) {
 			firebase.firestore().collection('sentences').add({
 				sentences: newSentence
 			}).then(resp => {
-				this.setState({ shareUrl: baseURL + '/editCode/' + resp.id, copied: true , URLload: false})
+				this.setState({ shareUrl: baseURL + '/editCode' + resp.id, copied: true, URLload: false })
 				setTimeout(() => this.setState({ copied: false }), 10000)
 			})
 		} else {
 			this.setState({ copied: true, URLload: false })
 			setTimeout(() => this.setState({ copied: false }), 10000)
 		}
+		this.ChangeMode(this.state.mode);
+	}
+	ChangeMode = (mode) => {
+		if (mode == 'basic') {
+			this.setState({ mode: 'master' })
+		} else if (mode == 'master') {
+			this.setState({ mode: 'basic' })
+		}
+		this.props.setMode(this.state.mode)
 	}
 	render() {
 		let options = {
 			lineNumbers: true,
 		};
 		const { isShareLink, shareUrl, URLload } = this.state;
+		const { mode } = this.props;
 
 		return (<div style={{ height: window.innerHeight }}>
+			{this.state.loader && <Loader />}
 			{this.state.copied && <AlertMessage message={`Share this link:`} link={true} href={shareUrl} />}
 			{this.state.exceed ? <AlertMessage message={'One of your sentence is too long, try to make it short'} /> : null}
 			{/* navbar */}
-			<MDBNavbar dark expand="md" fixed="top" >
-				<MDBNavbarBrand>
-					<Link to="/"><img src={require('../assets/icons/logo.jpg')} style={{width: '40%'}}/></Link>
-				</MDBNavbarBrand>
-				<MDBNavbarNav right>
-					{window.innerWidth > 800 ? <>
-						<MDBNavLink to="/about" >About</MDBNavLink>
-						<MDBNavLink to="/content" >Content</MDBNavLink>
-						<MDBNavLink to="/" color={'danger'} outline={true} style={{ border: '2px solid #ff3547', background: 'transparent', color: '#ff3547', margin: '0px 8px', borderRadius: 3, padding: '8px 20px' }} onClick={() => this.props.history.goBack()} >Quit</MDBNavLink>
-					</> : <MDBBtn outline={true} color="black" id="hamburgher" onClick={() => this.SideBar()}>
-							<MDBIcon size="md" icon="bars" />
-						</MDBBtn>}
-				</MDBNavbarNav>
-			</MDBNavbar>
-			{/* side navbar */}
-			{this.state.openNav ?
-				<MDBContainer>
-					<MDBSideNav
-						fixed={true}
-						slim={true}
-						hidden
-						triggerOpening={this.state.openNav}
-						breakWidth={1500}
-					>
-						<li style={{
-							padding: '30px 20px',
-							textAlign: 'center',
-							margin: '0 auto',
-						}}>
-							<MDBNavLink to="/" onClick={this.SideBar}>
-
-								DO NOT BLINK
-                            </MDBNavLink>
-						</li>
-						<li style={{
-							padding: '30px 20px',
-							textAlign: 'center',
-							margin: '0 auto',
-						}}>
-							<Link to="/" > DO NOT BLINK </Link>
-						</li>
-						<li >
-							<MDBNavLink to="/about" onClick={this.SideBar}>
-								About
-                    </MDBNavLink>
-						</li>
-						<li >
-							<MDBNavLink to="/content" onClick={this.SideBar}>
-								Content
-                    </MDBNavLink>
-						</li>
-						<li >
-							<MDBNavLink to="/" color={'danger'} outline={true} style={{ border: '2px solid #ff3547', background: 'transparent', color: '#ff3547', margin: '0px 8px', borderRadius: 3, padding: '8px 20px' }} onClick={() => this.props.history.push('/')} >
-								Back
-                    </MDBNavLink>
-						</li>
-					</MDBSideNav>
-				</MDBContainer>
-				: null}
+			<Navbar quit={false} />
 			<MDBContainer >
-				<MDBRow className="editor-container">
+				<MDBRow className="editor-container"
+					style={{ marginTop: 40 }}
+				>
+					<MDBCol size={'6'}>
+						<h5>Mode: <b style={{ textTransform: 'capitalize' }}>{mode}</b></h5>
+					</MDBCol>
+					<MDBCol size={'6'} style={{ textAlign: 'right' }}>
+						<Switch />
+					</MDBCol>
 					<MDBCol
 						size={'12'}
-						style={{ marginBottom: 20, marginTop: 40, minHeight: 220 }}
+						style={{ transform: 'translateY(-35px)'}}
 					>
 						<div style={{ textAlign: 'center' }}>
-							{isShareLink ? (
+							{isShareLink ?
 								<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to									<h6>Someone wants you to learn the text from this box. Make them proud.
-								add a line. Remove things you don't want to learn.									Each sentence from the box will blink very quickly.
-						</h6>									Your job is to remember it and write it down perfectly.
-									<h6>Your job is to master this text. You must write all of the lines after the first flash.</h6>									It is simple but very effective way to learn how to write and memorize text.
-								Good luck!</h6>
-							) : (
-									<>
-										<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to
-									add a line. Remove things you don't want to learn.</h6>
-										<h6>Your job is to master this text. You must write all of the lines after the first flash.</h6>
-									</>
-								)}
+								add a line. Remove things you don't want to learn.Each sentence from the box will blink very quickly.	Your job is to remember it and write it down perfectly.
+								Your job is to master this text. You must write all of the lines after the first flash.</h6>									It is simple but very effective way to learn how to write and memorize text.
+								Good luck!</h6> :
+								<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to
+									add a line. Remove things you don't want to learn.Your job is to master this text. You must write all of the lines after the first flash.</h6>}
 						</div>
 						{this.state.showEditor && <CodeMirror
 							className="editor"
@@ -246,14 +209,30 @@ class EditCode extends Component {
 							}}
 							options={options}
 						/>}
+						{this.state.hideMessage && <div style={{
+							textAlign: 'center',
+							margin: '10px 0',
+							background: 'rgb(51 51 51 / 79%)',
+							color: 'white',
+							padding: '7px 20px',
+							borderRadius: '10px',
+							position: 'relative',
+							fontSize: '1rem',
+							minHeight: 70
+						}}>
+							{mode == 'basic' ?
+								'Your job is to rewrite the sentence that will flash for a very short time. Train your focus, good luck!'
+								: 'You have to master every sentence now. Rewrite it using only one flash. If you use more than one flash for a sentence, you will see this sentence again. This helps you train your memory, too.'
+							}
+						</div>}
 						<div style={{ textAlign: 'center' }}>
 							<MDBBtn color="success" outline={true} onClick={() => this.splitSentences()}>
 								Start Learning
                         </MDBBtn>
-							{URLload ? 
-							<MDBBtn color="warning" outline={true} >{'  '}<i className="fa fa-spinner fa-spin" style={{padding: '0 30px'}}></i>{'  '}</MDBBtn> 
-							: <MDBBtn color="warning" outline={true} onClick={this.shareSet}>
-								Share this set
+							{URLload ?
+								<MDBBtn color="warning" outline={true} >{'  '}<i className="fa fa-spinner fa-spin" style={{ padding: '0 30px' }}></i>{'  '}</MDBBtn>
+								: <MDBBtn color="warning" outline={true} onClick={this.shareSet}>
+									Share this set
 						</MDBBtn>}
 						</div>
 					</MDBCol>
@@ -265,9 +244,10 @@ class EditCode extends Component {
 }
 
 const mapStateToProps = (state) => ({
-	sentences: state.sentences
+	sentences: state.sentences,
+	mode: state.mode
 });
 
-const mapDispatchToProps = { setSentences };
+const mapDispatchToProps = { setSentences, setMode };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditCode);

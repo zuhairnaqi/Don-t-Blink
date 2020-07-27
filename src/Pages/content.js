@@ -1,11 +1,10 @@
 import React from 'react'
 import '../App.css';
 import { MDBCard, MDBListGroup, MDBListGroupItem, MDBCollapse, MDBBtn, MDBCol, MDBContainer, MDBSideNavLink, MDBSideNavCat, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBSideNavNav } from "mdbreact"
-import { BrowserRouter as Router, Link } from 'react-router-dom';
 import { Songs } from '../songs';
 import { connect } from 'react-redux';
 import { setSentences } from '../store/sentences/action';
-
+import {Navbar} from '../components/navbar';
 class ContentPage extends React.Component {
     constructor(props) {
         super(props);
@@ -74,57 +73,8 @@ class ContentPage extends React.Component {
     render() {
 
         return <div>
-            {/* navbar */}
-            <MDBNavbar dark expand="md" fixed="top" >
-                <MDBNavbarBrand>
-                    <Link to="/"><img src={require('../assets/icons/logo.jpg')} style={{width: '40%'}}/></Link>
-                </MDBNavbarBrand>
-                <MDBNavbarNav right>
-                    {window.innerWidth > 800 ? <>
-                        <MDBNavLink to="/about" >About</MDBNavLink>
-                        <MDBNavLink className="active_links" to="/content" >Content</MDBNavLink>
-                        <MDBNavLink to="/" color="success" style={{ border: '2px solid #00c851', background: 'transparent', color: '#00c851', margin: '0px 8px', borderRadius: 3, padding: '8px 15px' }} onClick={() => this.props.history.push('/')} >Learn</MDBNavLink>
-                    </> : <MDBBtn outline={true} color="black" id="hamburgher" onClick={() => this.SideBar()}>
-                            <MDBIcon size="md" icon="bars" />
-                        </MDBBtn>}
-                </MDBNavbarNav>
-            </MDBNavbar>
-            {/* side navbar */}
-            {this.state.openNav ?
-                <MDBContainer>
-                    <MDBSideNav
-                        fixed={true}
-                        slim={true}
-                        hidden
-                        triggerOpening={this.state.openNav}
-                        breakWidth={1500}
-                    >
-                        <li style={{
-                            padding: '30px 20px',
-                            textAlign: 'center',
-                            margin: '0 auto',
-                        }}>
-                            <Link to="/" onClick={this.SideBar}> DO NOT BLINK </Link>
-                            <MDBNavLink to="/" color="success" style={{ border: '2px solid #00c851', background: 'transparent', color: '#00c851', margin: '0px 8px', borderRadius: 3, padding: '8px 15px' }} onClick={() => {
-                                this.SideBar()
-                                this.props.history.push('/')
-                            }} >Learn It!</MDBNavLink>
-
-                        </li>
-                        <li >
-                            <MDBNavLink to="/about" onClick={this.SideBar}>
-                                About
-                    </MDBNavLink>
-                        </li>
-                        <li className="active_links">
-                            <MDBNavLink to="/content" onClick={this.SideBar}>
-                                Content
-                    </MDBNavLink>
-                        </li>
-                    </MDBSideNav>
-                </MDBContainer>
-                : null}
-
+           {/* navbar */}
+           <Navbar quit={false} />
             <MDBContainer style={{ height: window.innerHeight, marginTop: '20%' }}>
                 <MDBRow>
                     <MDBCol size={2} md={4} lg={4}>
