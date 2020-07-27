@@ -93,7 +93,7 @@ a.nav-link.Ripple-parent {
 
 /* this is the animation of the logo  */
 
-.os-phrases h2 {
+.os-phrases h2, .flash_anim h2, .flash_anim h1 {
     font-weight: 200;
     width: 100%;
     overflow: hidden;
@@ -107,7 +107,7 @@ a.nav-link.Ripple-parent {
     margin: 0 auto;
     text-align: center;
     display: inline-block;
-    color: hsla(0, 0%, 0%, 0);
+    color: hsla(0, 0%, 0%, 0) !important;
     cursor: pointer;
     z-index: 9000
 }
@@ -144,6 +144,19 @@ a.nav-link.Ripple-parent {
     100% {
         color: #000000;
     }
+}
+
+
+.flash_anim h2{
+    animation-name: FadeIns;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-delay: 0.5s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+    animation-play-state: none;
+    cursor: none;
 }
 
 .os-phrases h2:nth-child(1) {
@@ -551,7 +564,7 @@ button {
 }
 
 .editor {
-    border: 1px solid black;
+    border: 1px solid #333333;
 }
 
 .active_links {

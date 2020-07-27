@@ -74,7 +74,7 @@ class LearningSession extends Component {
         }
         setTimeout(() => {
             this.setState({ startLearning: false });
-        }, 6000)
+        }, 2000)
     }
     checkInputColor = enableColor => {
         const { inputWord, selectedNote } = this.state;
@@ -181,6 +181,7 @@ class LearningSession extends Component {
     calculateFlashTiming = () => {
         const { sentences, sentenceIndex } = this.state;
         let time = sentences[sentenceIndex].sentence.length * 30;
+        let flash_time = time > 300 ? time : 300;
 
         setTimeout(() => {
             this.setState({
@@ -194,7 +195,7 @@ class LearningSession extends Component {
                 inputWord: '',
                 showWord: false,
                 timerOn: true,
-                countsec: time,
+                countsec: flash_time,
                 timerTime: this.state.timerTime,
                 timerStart: Date.now() - this.state.timerTime,
                 in: this.state.in + 1,
@@ -205,7 +206,7 @@ class LearningSession extends Component {
                     timerTime: Date.now() - this.state.timerStart
                 });
             }, 10);
-        }, time > 300 ? time : 300) // milliseconds on each word in flash 
+        }, flash_time) // milliseconds on each word in flash 
     }
 
     handleInputWord = e => {
@@ -406,18 +407,18 @@ class LearningSession extends Component {
                     {this.state.alert.length > 0 ? <AlertMessage message={this.state.alert} /> : null}
                     
                     {this.state.startLearning ?
-                        <div className="os-phrases" >
+                        <div className="flash_anim" >
                             <h2 hidden={!this.state.startLearning}><span className="blinking">do not</span> blink</h2>
                         </div> :
                         <h2 className="ready" onClick={this.readyLearningSession} hidden={this.state.hideReady}>Ready?</h2>}
                     {/* First flash section */}
-                    {showSection === 1 && hideReady && <div className="os-phrases">
+                    {showSection === 1 && hideReady && <div className="flash_anim">
                         <h2 style={{ fontSize: "2rem", textAlign: 'center', fontWeight: 400, cursor: "pointer" }}>flash {flashCount}</h2>
                     </div>}
 
                     {/* Question section */}
-                    {showSection === 2 && hideReady &&
-                        <h1 style={{ fontSize: "2rem", marginTop: 20, textAlign: 'center', fontWeight: 400 }}>{sentences[sentenceIndex] && sentences[sentenceIndex].sentence}</h1>}
+                    {showSection === 2 && hideReady && <h1 style={{ fontSize: "2rem", marginTop: 10, textAlign: 'center', fontWeight: 400 }}>{sentences[sentenceIndex] && sentences[sentenceIndex].sentence}</h1>}
+                    
 
                     {/* Count Section */}
                     {hideReady && <div style={(hideAll || hideReady) ? { position: 'absolute', top: 10, left: 0, right: 0 } : {}}>
@@ -517,7 +518,7 @@ class LearningSession extends Component {
                                     <MDBBtn onClick={this.SkipSentence} color="black" outline style={{ borderRadius: 50 }} >SKIP</MDBBtn>
                                 </MDBCol>
                                 <MDBCol size={'3'} >
-                                    <MDBNavLink to="/" color="black" outline style={{ borderRadius: 50 }}>QUIT</MDBNavLink>
+                                    <MDBBtn href="/" color="black" outline style={{ borderRadius: 50 }}>QUIT</MDBBtn>
                                 </MDBCol>
                             </MDBRow>
                         </MDBAnimation>}
