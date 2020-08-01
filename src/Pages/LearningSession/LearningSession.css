@@ -22,16 +22,8 @@
     position: absolute;
     left: 0;
     right: 0;
-    opacity: 0;
-    animation: glow 1s linear 1s infinite;
 }
-@keyframes glow {
-    
-    to {
-        font-size: medium;
-        opacity: 1;
-    }
-}
+
 
 .input-container {
     border-bottom: 0.5px solid #000 !important;

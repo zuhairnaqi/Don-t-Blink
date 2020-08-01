@@ -68,12 +68,7 @@ class LearningSession extends Component {
         const { sentences } = this.props;
         if (sentences && sentences.length > 0) {
             this.setState({ sentences });
-            console.log(sentences);
-            window.addEventListener('keypress', (e) => {
-                if (e.keyCode === 13) {
-                    this.readyLearningSession()
-                }
-            })
+            window.addEventListener('keypress', this.StartSession)
             setTimeout(() => {
                 this.setState({ startLearning: false });
             }, 1500)
@@ -181,13 +176,13 @@ class LearningSession extends Component {
             this.setState({ showSection: 2 });
             this.calculateFlashTiming();
         }, this.state.flashBannerTiming)
-        window.removeEventListener('keypress', (e) => {
-            if (e.keyCode === 13) {
-                this.readyLearningSession()
-            }
-        })
+        window.removeEventListener('keypress', this.StartSession)
     }
-
+    StartSession = (e) => {
+        if (e.keyCode === 13) {
+            this.readyLearningSession()
+        }
+    }
     calculateFlashTiming = () => {
         const { sentences, sentenceIndex } = this.state;
         let time = sentences[sentenceIndex].sentence.length * 30;
@@ -213,9 +208,9 @@ class LearningSession extends Component {
                 this.setState({
                     timerTime: Date.now() - this.state.timerStart
                 });
+
             }, 10);
         }, flash_time) // milliseconds on each word in flash 
-        // clearInterval(this.timer);
     }
 
     handleInputWord = e => {
@@ -243,7 +238,7 @@ class LearningSession extends Component {
         if (e.target.value === selectedNote) {
             let index = sentenceIndex + 1;
             let isFlashUsed = count > 1;
-            if (isFlashUsed) {
+            if (isFlashUsed && this.props.mode === 'memory') {
                 const repeatSentence = sentences.splice(sentenceIndex, 1)[0];
                 repeatSentence.mastered = false;
                 repeatSentence.tried = true;
@@ -265,6 +260,7 @@ class LearningSession extends Component {
                 againSentenceMessage: isFlashUsed,
                 inputStyle,
             })
+
             clearInterval(this.timer);
             this.enableWindowKeyboardListener();
         } else {
@@ -357,11 +353,7 @@ class LearningSession extends Component {
     }
 
     nextSentence = () => {
-        if (this.props.mode == 'master') {
-            this.resetState();
-        } else if (this.props.mode == 'basic') {
-            this.SkipSentence()
-        }
+        this.resetState();
         this.disableWindowKeyboardListener();
     }
     youLearnItButtonPressed = () => {
@@ -420,7 +412,10 @@ class LearningSession extends Component {
                     {this.state.alert.length > 0 ? <AlertMessage message={this.state.alert} /> : null}
                     <div className="flash_anim" >
                         <h2 hidden={!this.state.startLearning}><span className="blinking">do not</span> blink</h2>
-                        <small className='glow' style={{ textAlign: 'center' }} hidden={this.state.startLearning || this.state.hideReady}>press <b>Enter</b> to see the first flash </small>
+                        {!this.state.startLearning && 
+                        <MDBAnimation type="fadeIn" duration="1s" delay="1s" >
+                            <small className='glow' style={{ textAlign: 'center' }} hidden={this.state.startLearning || this.state.hideReady}>press <b>Enter</b> to see the first flash </small>
+                        </MDBAnimation>}
                     </div>
 
                     {/* First flash section */}
@@ -545,7 +540,7 @@ class LearningSession extends Component {
                             onChange={(e) => this.handleInputWord(e)}
                             size="lg"
                         />
-                        {this.props.mode == 'master' && <div className="bottom_message">
+                        {this.props.mode == 'memory' && <div className="bottom_message">
                             {againSentenceMessage ? <>
                                 <h2>Good</h2>
                                 <h4>you will see this sentence again</h4>
