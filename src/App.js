@@ -4,6 +4,7 @@ import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBRow, MDBSideNa
 import InputComponent from './components/InputComponent/InputComponent';
 import Footer from './components/footer/footer'
 import {Navbar} from './components/navbar';
+import FullScreenMode from './components/FullScreen'
 
 class App extends React.Component {
   constructor(props) {
@@ -270,39 +271,6 @@ class App extends React.Component {
                   navigate={this.props.history.push}
                   modal={this.state.modal} />
                 : <>
-                  {/* {showReady && <h2 className="ready" onClick={this.handleClick}>Ready?</h2>}
-
-                  <h1 className="pb-2"  hidden={this.state.showWord}>{this.state.selectedNote}</h1>
-                  {!this.state.inputHidden && <>
-
-                  Here is the counter of flashes and length of the first flash view
-                  <h2 className="count"> {this.state.count} <small>{this.state.countsec / 1000}s</small></h2>
-                    <MDBContainer>
-                      <MDBRow>
-                        <MDBCol size={window.innerWidth > 900 ? '6' : '12'} style={{ textAlign: 'center', marginBottom: 20 }}>
-                          <MDBInput label={'write down what you see'} className="text-center" autoFocus style={inputStyle} value={this.state.inputWord} type="text" onChange={(e) => this.handleInputWord(e)} size="lg" />
-                          <MDBBtn outline={true} color="black" className="text-center pt-2 mb-2" style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.handleAgain}>Again?</MDBBtn>
-                        </MDBCol>
-                        <MDBCol size={window.innerWidth > 900 ? '6' : '12'} style={{ textAlign: 'center' }} >
-
-                          <div className="content"
-                          >
-                            <h1 style={{ textAlign: 'center', padding: '10px 0' }}>Learn one of these contents:</h1>
-                            <MDBContainer>
-                              <MDBListGroup style={{ width: '100%', cursor: 'pointer' }}>
-                                {Songs.map(song => <MDBListGroupItem key={song.id} onClick={() => {
-                                  this.toggle()
-                                  this.modalId(song.id)
-                                }} > {song.title} </MDBListGroupItem>)}
-                              </MDBListGroup>
-                            </MDBContainer>
-
-                            {this.state.modal ? <Modal texttolearn={this.addTextToLearn} move={this.routeToLearning} modalId={this.state.modalId} toggle={this.toggle} modal={this.state.modal} /> : null}
-                          </div>
-                        </MDBCol>
-                      </MDBRow>
-                    </MDBContainer>
-                  </>} */}
                   {this.state.perfect && <div className="text-center" >
                     <MDBInput type="text" className="text-center" style={inputStyle} value={this.state.inputWord} onChange={(e) => this.handleInputWord(e)} size="lg" />
                     <h2>{this.state.selectedEnd}</h2>
@@ -323,6 +291,7 @@ class App extends React.Component {
               )}
           </div>
         </div>
+        <FullScreenMode />
         {/* Slider ends */}
         <Footer />
       </>

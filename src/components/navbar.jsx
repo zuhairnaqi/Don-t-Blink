@@ -9,17 +9,18 @@ export const Navbar = (props) => {
     const SideBar = () => {
         setNav(!openNav);
     }
-
     return (<>
-        <MDBNavbar dark expand="md" fixed="top" className={hideAll ? 'opa_hide' : 'opa_show'}>
+        <MDBNavbar dark expand="md" fixed="top" className={(hideAll) ? 'opa_hide' : 'opa_show'}>
             <MDBNavbarBrand>
-                <Link to="/"><img src={require('../assets/icons/logo.jpg')} style={{ width: '40%' }} /></Link>
+                {/* <Link to="/"><img src={require('../assets/icons/logo.jpg')} style={{ width: '40%' }} /></Link> */}
+                <Link to="/" style={{color: '#333333', fontWeight: 600}}>DO NOT BLINK</Link>
             </MDBNavbarBrand>
             <MDBNavbarNav right>
                 {window.innerWidth > 900 ? <>
                     <MDBNavLink to="/about" >About</MDBNavLink>
                     <MDBNavLink to="/content" >Content</MDBNavLink>
-                    {quit && <MDBNavLink to="/" color={'danger'} outline={true} style={{ border: '2px solid #ff3547', background: 'transparent', color: '#ff3547', margin: '0px 8px', borderRadius: 3, padding: '8px 20px' }} >Quit</MDBNavLink>}
+                    {quit ? <MDBNavLink to="/" color={'danger'} outline={true} style={{ border: '2px solid #ff3547', background: 'transparent', color: '#ff3547', margin: '0px 8px', borderRadius: 3, padding: '8px 20px' }} >Quit</MDBNavLink> 
+                    : <MDBNavLink to="/" color={'success'} outline={true} style={{ border: '2px solid #04af04', background: 'transparent', color: '#04af04', margin: '0px 8px', borderRadius: 3, padding: '8px 20px' }} >Start</MDBNavLink>}
 
                 </> : <MDBBtn outline={true} color="black" id="hamburgher" onClick={() => SideBar()}>
                         <MDBIcon size="md" icon="bars" />
@@ -53,8 +54,11 @@ export const Navbar = (props) => {
                             Content
     </MDBNavLink>
                     </li>
-                    {quit && <li >
+                    {quit ? <li >
                         <MDBNavLink to="/" color={'danger'} outline={true} style={{ border: '2px solid #ff3547', background: 'transparent', color: '#ff3547', margin: '0px 8px', borderRadius: 3, padding: '8px 20px' }}  >Quit</MDBNavLink>
+                    </li> :
+                    <li>
+                        <MDBNavLink to="/" color={'success'} outline={true} style={{ border: '2px solid #04af04', background: 'transparent', color: '#04af04', margin: '0px 8px', borderRadius: 3, padding: '8px 20px' }}  >Start</MDBNavLink>
                     </li>}
 
                 </MDBSideNav>

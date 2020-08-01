@@ -7,8 +7,8 @@ const Switch = (props) => {
 
     const options = [
         {
-            label: "Master",
-            value: "master",
+            label: "Memory",
+            value: "memory",
             selectedBackgroundColor: "#0570b9",
         },
         {
@@ -22,9 +22,9 @@ const Switch = (props) => {
         props.setMode(newValue)
     };
 
-    const initialSelectedIndex = options.findIndex(({ value }) => value === "master");
+    const initialSelectedIndex = options.findIndex(({ value }) => value === "basic");
     return (
-        <div className="react-switch-selector-wrapper" style={{ marginTop: 20,width: 130, float: 'right' }}>
+        <div className="react-switch-selector-wrapper" style={{ width: 130, float: 'right' }}>
             <SwitchSelector
                 onChange={onChange}
                 options={options}

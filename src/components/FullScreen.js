@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FullScreen from '../assets/icons/fullscreen.png'
 import ExitFullScreen from '../assets/icons/exit-fullscreen.png';
 
-const FullScreenMode = () => {
+const FullScreenMode = (props) => {
     let [fullscreenMode, setFullScreen] = useState(false);
 
     useEffect(() => {
@@ -23,8 +23,8 @@ const FullScreenMode = () => {
     }
     return (<>
         {fullscreenMode ?
-            <img src={ExitFullScreen} alt="ExitFullScreen" className="fullscreen opacity_anim" onClick={disableFullScreen} /> :
-            <img src={FullScreen} alt="FullScreen" className="fullscreen opacity_anim" onClick={enableFullScreen} />}
+            <img style={props.style} src={ExitFullScreen} alt="ExitFullScreen" className="fullscreen opacity_anim" onClick={disableFullScreen} /> :
+            <img style={props.style} src={FullScreen} alt="FullScreen" className="fullscreen opacity_anim" onClick={enableFullScreen} />}
     </>)
 }
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBListGroup, MDBListGroupItem } from "mdbreact"
 import ReactTooltip from "react-tooltip";
-import { Link } from 'react-router-dom'
 import './LearningSession.css';
 import '../../App.css';
 import AlertMessage from '../../components/Alert';
@@ -10,10 +9,10 @@ import CatScreaming from '../../Musics/cat-screaming.wav';
 import GoodSound from '../../Musics/good.wav';
 import MasteredSound from '../../Musics/mastered.wav';
 import PurrrSound from '../../Musics/purrr.wav';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { setSentences, setMode } from '../../store/sentences/action'
 import { Instruction } from './instruction';
 import { Navbar } from '../../components/navbar';
+import FullScreenMode from '../../components/FullScreen';
 
 class LearningSession extends Component {
     constructor(props) {
@@ -56,7 +55,7 @@ class LearningSession extends Component {
             startLearning: true,
             playSound: false,
             sentenceSkipped: 0,
-            HideAll: false,
+            HideAll: true,
             spellCheck: false
         }
         this.CatScreaming = new Audio(CatScreaming); // This audio for black input
@@ -69,12 +68,18 @@ class LearningSession extends Component {
         const { sentences } = this.props;
         if (sentences && sentences.length > 0) {
             this.setState({ sentences });
+            console.log(sentences);
+            window.addEventListener('keypress', (e) => {
+                if (e.keyCode === 13) {
+                    this.readyLearningSession()
+                }
+            })
+            setTimeout(() => {
+                this.setState({ startLearning: false });
+            }, 1500)
         } else {
             this.props.history.push('/')
         }
-        setTimeout(() => {
-            this.setState({ startLearning: false });
-        }, 2000)
     }
     checkInputColor = enableColor => {
         const { inputWord, selectedNote } = this.state;
@@ -176,19 +181,22 @@ class LearningSession extends Component {
             this.setState({ showSection: 2 });
             this.calculateFlashTiming();
         }, this.state.flashBannerTiming)
+        window.removeEventListener('keypress', (e) => {
+            if (e.keyCode === 13) {
+                this.readyLearningSession()
+            }
+        })
     }
 
     calculateFlashTiming = () => {
         const { sentences, sentenceIndex } = this.state;
         let time = sentences[sentenceIndex].sentence.length * 30;
         let flash_time = time > 300 ? time : 300;
-
         setTimeout(() => {
             this.setState({
                 showSection: 3,
                 clickedReady: true,
-                selectedEnd: this.state.per[Math.floor(Math.random() *
-                    this.state.per.length)],
+                selectedEnd: this.state.per[Math.floor(Math.random() * this.state.per.length)],
                 inputHidden: false,
                 hideReady: true,
                 perfect: false,
@@ -207,6 +215,7 @@ class LearningSession extends Component {
                 });
             }, 10);
         }, flash_time) // milliseconds on each word in flash 
+        // clearInterval(this.timer);
     }
 
     handleInputWord = e => {
@@ -330,7 +339,9 @@ class LearningSession extends Component {
         window.addEventListener('keydown', this.windowKeyboardListener)
     }
     windowKeyboardListener = event => {
-        if (event.keyCode === 13) {
+        if (event.keyCode == 13 && event.shiftKey) {
+            this.SkipSentence()
+        } else if (event.keyCode === 13) {
             const { sentences, sentenceIndex } = this.state;
             if (sentences[sentenceIndex] !== undefined) {
                 this.nextSentence()
@@ -338,6 +349,7 @@ class LearningSession extends Component {
             }
             this.youLearnItButtonPressed()
         }
+
     }
 
     disableWindowKeyboardListener = () => {
@@ -345,10 +357,10 @@ class LearningSession extends Component {
     }
 
     nextSentence = () => {
-        if(this.props.mode == 'master'){
+        if (this.props.mode == 'master') {
             this.resetState();
-        }else if(this.props.mode == 'basic') {
-            this.SkipSentence()    
+        } else if (this.props.mode == 'basic') {
+            this.SkipSentence()
         }
         this.disableWindowKeyboardListener();
     }
@@ -403,14 +415,14 @@ class LearningSession extends Component {
                         if (this.state.hideAll) {
                             this.setState({ hideAll: false })
                         }
-                    }}>
+                    }}
+                >
                     {this.state.alert.length > 0 ? <AlertMessage message={this.state.alert} /> : null}
-                    
-                    {this.state.startLearning ?
-                        <div className="flash_anim" >
-                            <h2 hidden={!this.state.startLearning}><span className="blinking">do not</span> blink</h2>
-                        </div> :
-                        <h2 className="ready" onClick={this.readyLearningSession} hidden={this.state.hideReady}>Ready?</h2>}
+                    <div className="flash_anim" >
+                        <h2 hidden={!this.state.startLearning}><span className="blinking">do not</span> blink</h2>
+                        <small className='glow' style={{ textAlign: 'center' }} hidden={this.state.startLearning || this.state.hideReady}>press <b>Enter</b> to see the first flash </small>
+                    </div>
+
                     {/* First flash section */}
                     {showSection === 1 && hideReady && <div className="flash_anim">
                         <h2 style={{ fontSize: "2rem", textAlign: 'center', fontWeight: 400, cursor: "pointer" }}>flash {flashCount}</h2>
@@ -418,14 +430,14 @@ class LearningSession extends Component {
 
                     {/* Question section */}
                     {showSection === 2 && hideReady && <h1 style={{ fontSize: "2rem", marginTop: 10, textAlign: 'center', fontWeight: 400 }}>{sentences[sentenceIndex] && sentences[sentenceIndex].sentence}</h1>}
-                    
+
 
                     {/* Count Section */}
                     {hideReady && <div style={(hideAll || hideReady) ? { position: 'absolute', top: 10, left: 0, right: 0 } : {}}>
-                        <ReactTooltip place="bottom" type="dark" effect="solid" />
-                        <div className="left_count"  >
+                        <ReactTooltip type="dark" effect="solid" />
+                        <div className="left_count" className={(hideAll || hideReady) ? 'opa_hide' : 'opa_show '}>
                             <h2> <span data-tip={`This Was Flash ${this.state.count}`} >  {this.state.count} </span>  <span data-tip={`It Took ${(this.state.countsec / 1000).toFixed(1)} seconds`} > &nbsp;{(this.state.countsec / 1000).toFixed(1)}s</span> </h2>
-                            <div className={(hideAll || hideReady) ? 'opa_hide custom-control custom-switch' : 'opa_show custom-control custom-switch'}>
+                            <div className='custom-control custom-switch'>
                                 <input
                                     type='checkbox'
                                     className='custom-control-input'
@@ -444,10 +456,8 @@ class LearningSession extends Component {
                         </div>
 
                         <div className="right_count">
-                            <h2 >
-                                <span data-tip={`${notTriedSentencesCount} more new`} >
-                                    {notTriedSentencesCount}
-                                </span>
+                            <h2 style={{ fontSize: (hideAll || hideReady) ? 'medium' : 'inherit' }}>
+                                <span data-tip={`${notTriedSentencesCount} more new`} >{notTriedSentencesCount}</span>
                                 <span data-tip={`${notMasteredCount} to try again`}> &nbsp;{notMasteredCount} &nbsp; </span>
                                 <span data-tip={`${masteredCount} out of ${sentences.length} mastered`} > {masteredCount}/{sentences.length}</span>
                             </h2>
@@ -463,6 +473,7 @@ class LearningSession extends Component {
                                 <label className='custom-control-label' htmlFor='customSwitches1'>
                                     SOUNDS
                             </label>
+                                <FullScreenMode style={(hideAll || hideReady) ? { opacity: 1, width: '22px', top: '18px', visibility: 'visible', right: '15px' } : {}} />
                             </div>
                         </div>
                     </div>}
@@ -489,35 +500,35 @@ class LearningSession extends Component {
                         />
                         <h3 className="text-center pt-2 mb-2" style={{ cursor: "pointer" }} onClick={this.handleAgain}>
                             <ReactTooltip place="bottom" type="dark" effect="solid" />
-                            <i className="fa fa-repeat" data-tip={'one more flash'} ></i>
+                            <i className="fa fa-repeat" style={{ fontSize: 'medium' }} data-tip={'press Enter if you need another flash'} ></i>
                         </h3>
                         {/* SKIP BUTTON */}
                         <MDBBtn outline={true} color="black" className={(hideAll || hideReady) ? 'opa_hide skip' : 'opa_show skip'} style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.SkipSentence}>Skip </MDBBtn>
 
                         {/* LEARNING SESSION BUTTONS */}
-                        {!hideAll && <MDBAnimation className={'counter_container'} type="slideInUp" duration="500ms" delay="500ms">
+                        {!hideAll && <MDBAnimation className={'counter_container'} type="slideInUp" duration="500ms" delay="200ms">
                             <MDBRow>
-                                <MDBCol size={'3'} >
+                                {/* <MDBCol size={'3'} >
                                     <MDBBtn onClick={() => {
                                         this.setState({ enableColor: !enableColor })
                                         this.checkInputColor(!enableColor);
                                         if (!enableColor) {
-                                            this.setState({ alert: 'Hint Activated!!',spellCheck: true })
+                                            this.setState({ alert: 'Hint Activated!!', spellCheck: true })
                                             setTimeout(() => this.setState({ alert: '' }), 2000)
                                         } else {
-                                            this.setState({ alert: 'Hint Deactivated!!',spellCheck: false })
+                                            this.setState({ alert: 'Hint Deactivated!!', spellCheck: false })
                                             setTimeout(() => this.setState({ alert: '' }), 2000)
                                         }
                                     }} color="black" outline style={{ borderRadius: 50 }}  >HINT</MDBBtn>
-                                </MDBCol>
-                                <MDBCol size={'3'} >
+                                </MDBCol> */}
+                                <MDBCol size={'4'} >
                                     <ReactTooltip place="bottom" type="dark" effect="solid" />
                                     <MDBBtn data-tip={Instruction} color="black" outline style={{ borderRadius: 50 }} >INFO</MDBBtn>
                                 </MDBCol>
-                                <MDBCol size={'3'} >
-                                    <MDBBtn onClick={this.SkipSentence} color="black" outline style={{ borderRadius: 50 }} >SKIP</MDBBtn>
+                                <MDBCol size={'4'} >
+                                    <MDBBtn data-tip="Press Shift+Enter to skip this sentence." onClick={this.SkipSentence} color="black" outline style={{ borderRadius: 50 }} >SKIP</MDBBtn>
                                 </MDBCol>
-                                <MDBCol size={'3'} >
+                                <MDBCol size={'4'} >
                                     <MDBBtn href="/" color="black" outline style={{ borderRadius: 50 }}>QUIT</MDBBtn>
                                 </MDBCol>
                             </MDBRow>
@@ -534,22 +545,21 @@ class LearningSession extends Component {
                             onChange={(e) => this.handleInputWord(e)}
                             size="lg"
                         />
-                        <div className="bottom_message">
+                        {this.props.mode == 'master' && <div className="bottom_message">
                             {againSentenceMessage ? <>
                                 <h2>Good</h2>
                                 <h4>you will see this sentence again</h4>
                                 <h4>rewrite it with only 1 flash to master it</h4>
                             </> : <h4>mastered!</h4>}
-                        </div>
+                        </div>}
                         <MDBAnimation type="fadeIn" duration="1s" delay="1s">
                             {/* Here is the counter of flashes */}
                             {againSentenceMessage && <>
                                 <h4 className="p-2">You needed {this.state.count} flashes</h4>
                                 <h4 className="p-2">It took you {(minute * 60) + Number(second)} seconds</h4>
                             </>}
-                            {/* :  */}
                             {sentences[sentenceIndex] !== undefined ? <>
-                                <MDBBtn outline={true} color="black" style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.nextSentence}>Next Sentence</MDBBtn>
+                                <MDBBtn data-tip="press Enter to get another one" outline={true} color="black" style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={this.nextSentence}>Next Sentence</MDBBtn>
                             </> :
                                 <div>
                                     <h4 style={{ cursor: "pointer" }}>you have learned {masteredCount} {masteredCount > 1 ? 'sentences' : 'sentence'}!</h4>
@@ -557,7 +567,6 @@ class LearningSession extends Component {
                                 </div>}
                         </MDBAnimation>
                     </div>}
-
                 </MDBContainer>
             </>)
     }
@@ -572,3 +581,4 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = { setSentences, setMode };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LearningSession);
+

@@ -5,6 +5,8 @@ import { Songs } from '../songs';
 import { connect } from 'react-redux';
 import { setSentences } from '../store/sentences/action';
 import {Navbar} from '../components/navbar';
+import FullScreenMode from '../components/FullScreen';
+
 class ContentPage extends React.Component {
     constructor(props) {
         super(props);
@@ -100,6 +102,7 @@ class ContentPage extends React.Component {
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>
+            <FullScreenMode />
 
         </div>
     }

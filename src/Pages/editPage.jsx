@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { highlight, languages } from 'prismjs/components/prism-core';
+import ReactTooltip from "react-tooltip";
 import 'prismjs/components/prism-erlang';
 import 'prismjs/themes/prism-twilight.css';
 import { connect } from 'react-redux';
@@ -10,13 +11,14 @@ import { Link } from 'react-router-dom'
 import { setSentences, setMode } from '../store/sentences/action';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import AlertMessage from '../components/Alert'
 import firebase from '../Config/firebaseConfig';
 import baseURL from '../Config/baseURL';
 import { Navbar } from '../components/navbar';
 import Switch from '../components/switchSelector'
-import {Loader} from '../components/loader'
+import { Loader } from '../components/loader'
+import FullScreenMode from '../components/FullScreen'
+
 class EditCode extends Component {
 	constructor() {
 		super();
@@ -33,7 +35,8 @@ class EditCode extends Component {
 			URLload: false,
 			mode: 'basic',
 			hideMessage: true,
-			loader: false
+			loader: false,
+			hideAll: false
 		};
 	}
 
@@ -52,7 +55,7 @@ class EditCode extends Component {
 			}
 			this.setState({ sentences, code, showEditor: true, exceed });
 		} else if (this.props.match.params.id) {
-			this.setState({loader: true })
+			this.setState({ loader: true })
 			firebase.firestore().collection('sentences').doc(this.props.match.params.id).get()
 				.then(response => {
 					const data = response.data();
@@ -132,6 +135,7 @@ class EditCode extends Component {
 			}, 2000)
 		}
 	}
+
 	shareSet = () => {
 		this.setState({ URLload: true })
 		let newSentence = []
@@ -158,11 +162,15 @@ class EditCode extends Component {
 	}
 	ChangeMode = (mode) => {
 		if (mode == 'basic') {
-			this.setState({ mode: 'master' })
-		} else if (mode == 'master') {
+			this.setState({ mode: 'memory' })
+		} else if (mode == 'memory') {
 			this.setState({ mode: 'basic' })
 		}
 		this.props.setMode(this.state.mode)
+	}
+	setAlert = () => {
+		this.setState({ copied: false, alert: 'Link has been copied to clipboard.' })
+		setTimeout(() => this.setState({ alert: 'Link has been copied to clipboard.' }), 2000)
 	}
 	render() {
 		let options = {
@@ -173,7 +181,8 @@ class EditCode extends Component {
 
 		return (<div style={{ height: window.innerHeight }}>
 			{this.state.loader && <Loader />}
-			{this.state.copied && <AlertMessage message={`Share this link:`} link={true} href={shareUrl} />}
+			{this.state.alert !== '' ? <AlertMessage message={'Link has been copied to clipboard.'} link={false} href={shareUrl} setAlert={this.setAlert} /> : null}
+			{this.state.copied && <AlertMessage message={`Share this link:`} link={true} href={shareUrl} setAlert={this.setAlert} />}
 			{this.state.exceed ? <AlertMessage message={'One of your sentence is too long, try to make it short'} /> : null}
 			{/* navbar */}
 			<Navbar quit={false} />
@@ -181,24 +190,27 @@ class EditCode extends Component {
 				<MDBRow className="editor-container"
 					style={{ marginTop: 40 }}
 				>
-					<MDBCol size={'6'}>
-						<h5>Mode: <b style={{ textTransform: 'capitalize' }}>{mode}</b></h5>
-					</MDBCol>
-					<MDBCol size={'6'} style={{ textAlign: 'right' }}>
-						<Switch />
-					</MDBCol>
 					<MDBCol
 						size={'12'}
-						style={{ transform: 'translateY(-35px)'}}
+						style={{ transform: 'translateY(-35px)' }}
 					>
 						<div style={{ textAlign: 'center' }}>
+							<ReactTooltip place="bottom" type="dark" effect="solid" />
 							{isShareLink ?
-								<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to									<h6>Someone wants you to learn the text from this box. Make them proud.
-								add a line. Remove things you don't want to learn.Each sentence from the box will blink very quickly.	Your job is to remember it and write it down perfectly.
-								Your job is to master this text. You must write all of the lines after the first flash.</h6>									It is simple but very effective way to learn how to write and memorize text.
-								Good luck!</h6> :
-								<h6>You will learn {this.state.sentencesLength} portions of text. Make sure they are not too long. Hit enter if you want to
-									add a line. Remove things you don't want to learn.Your job is to master this text. You must write all of the lines after the first flash.</h6>}
+								<>
+									<h6>You will learn {this.state.sentencesLength} sentences. <i
+										data-tip="Make sure they are not too long. Hit enter if you want to	add a line. Remove things you don't want to learn.Each sentence from the box will blink very quickly. Your job is to remember it and write it down perfectly. Your job is to master this text. You must write all of the lines after the first flash."
+										className="fa fa-info-circle"
+									></i></h6> <br />
+									<h6>Someone wants you to learn the text from this box. Make them proud. It is simple but very effective way to learn how to write and memorize text. <br />
+								Good luck!</h6>
+								</> :
+								<h6 >You will learn {this.state.sentencesLength} sentences. <i
+									data-tip="Make sure they are not too long. Hit enter if you want to add a line. Remove things you don't want to learn."
+									className="fa fa-info-circle"
+								></i> <br />
+								Your job is to master this text. You must write all of the lines after the first flash.
+								</h6>}
 						</div>
 						{this.state.showEditor && <CodeMirror
 							className="editor"
@@ -209,6 +221,14 @@ class EditCode extends Component {
 							}}
 							options={options}
 						/>}
+						<MDBRow style={{ marginTop: 20 }}>
+							<MDBCol size={'6'}>
+								<h5>Mode: <b style={{ textTransform: 'capitalize' }}>{mode}</b></h5>
+							</MDBCol>
+							<MDBCol size={'6'} style={{ textAlign: 'right' }}>
+								<Switch />
+							</MDBCol>
+						</MDBRow>
 						{this.state.hideMessage && <div style={{
 							textAlign: 'center',
 							margin: '10px 0',
@@ -229,16 +249,19 @@ class EditCode extends Component {
 							<MDBBtn color="success" outline={true} onClick={() => this.splitSentences()}>
 								Start Learning
                         </MDBBtn>
+							<ReactTooltip place="bottom" type="dark" effect="solid" />
 							{URLload ?
 								<MDBBtn color="warning" outline={true} >{'  '}<i className="fa fa-spinner fa-spin" style={{ padding: '0 30px' }}></i>{'  '}</MDBBtn>
-								: <MDBBtn color="warning" outline={true} onClick={this.shareSet}>
+								: <MDBBtn color="warning" outline={true} onClick={this.shareSet} data-tip="Send the link to anyone">
 									Share this set
-						</MDBBtn>}
+									</MDBBtn>}
 						</div>
 					</MDBCol>
 
 				</MDBRow>
 			</MDBContainer>
+            <FullScreenMode />
+
 		</div >);
 	}
 }

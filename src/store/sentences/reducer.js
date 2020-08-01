@@ -2,7 +2,7 @@ import React from 'react';
 
 let initialState = {
     sentences: [],
-    mode: 'master',
+    mode: 'basic',
     visible: false
 }
 export default function counter(state, action) {

@@ -2,6 +2,8 @@ import React from 'react'
 import '../App.css';
 import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBSideNavLink, MDBSideNavCat, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBSideNavNav } from "mdbreact"
 import {Navbar} from '../components/navbar';
+import FullScreenMode from '../components/FullScreen';
+
 export default class About extends React.Component {
     constructor(props) {
         super(props);
@@ -38,27 +40,7 @@ export default class About extends React.Component {
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>
-
-            {/* <div className="header" style={{ height: 200, background: '#000000' }}>
-            </div>
-
-            <div className="fake-bg" >
-                <div className="card-section" >
-                    <div className="section-content section-content-page" >
-                        <MDBContainer >
-                            <article >
-                                <header className="entry-header">
-                                    <h1 className="entry-title entry-title-cover-empty">About</h1>
-                                    <div className="post-letter">A</div>
-                                </header>
-                                <div className="entry-content clearfix" >
-                                    <p>write content here...     </p>
-                                </div>
-                            </article>
-                        </MDBContainer>
-                    </div>
-                </div>
-            </div> */}
+           <FullScreenMode />
         </div>
     }
 }

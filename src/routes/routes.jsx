@@ -24,7 +24,6 @@ export default class Routes extends Component {
                 <Route exact path="/result-page" component={ResultPage} />
                 {/* <Route exact path="*" component={} /> */}
             </Switch>
-            <FullScreenMode />
         </BrowserRouter>)
     }
 }
