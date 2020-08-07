@@ -1,6 +1,6 @@
 import React from 'react'
 import '../App.css';
-import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBSideNavLink, MDBSideNavCat, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBSideNavNav } from "mdbreact"
+import { MDBCol, MDBContainer, MDBRow } from "mdbreact"
 import {Navbar} from '../components/navbar';
 import FullScreenMode from '../components/FullScreen';
 

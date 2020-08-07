@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
-import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBListGroup, MDBListGroupItem } from "mdbreact"
-import { Link } from 'react-router-dom'
+import { MDBBtn } from "mdbreact"
 import './style.css';
 import { connect } from 'react-redux';
-import AlertMessage from '../../components/Alert';
+import { AlertMessage } from '../../components/Alert';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import firebase from '../../Config/firebaseConfig';
-import baseURL from '../../Config/baseURL';
-import {Navbar} from '../../components/navbar';
+import firebase from '../../config/firebaseConfig';
+import baseURL from '../../config/baseURL';
+import { Navbar } from '../../components/navbar';
 import FullScreenMode from '../../components/FullScreen';
 import ReactTooltip from "react-tooltip";
+import { ToastContainer } from 'react-toastify';
 
 class Result extends Component {
     constructor(props) {
         super(props);
         this.state = {
             openNav: false,
-            copied: false,
             isLastSkipped: false,
             sentencesLearned: 0,
             shareUrl: '',
@@ -25,23 +24,21 @@ class Result extends Component {
     }
     shareSet = () => {
         this.setState({ URLload: true })
-        if (this.state.shareUrl) {
-            this.setState({ copied: true, URLload: false });
-            setTimeout(() => this.setState({ copied: false }), 10000);
-            return;
+        if (!this.state.shareUrl) {
+
+            firebase.firestore().collection('sentences').add({
+                sentences: this.props.sentences
+            }).then(resp => {
+                this.setState({ shareUrl: baseURL + '/editCode' + resp.id, URLload: false })
+                AlertMessage({ message: `Share this link:`, link: true, href: baseURL + '/editCode' + resp.id });
+            })
         }
-        firebase.firestore().collection('sentences').add({
-            sentences: this.props.sentences
-        }).then(resp => {
-            this.setState({ shareUrl: baseURL + '/editCode' + resp.id, copied: true, URLload: false })
-            setTimeout(() => this.setState({ copied: false }), 10000)
-        })
     }
     SideBar = () => {
         this.setState({ openNav: !this.state.openNav })
     }
     componentWillMount() {
-        this.props.sentences.length == 0 && this.props.history.push('/')
+        this.props.sentences.length === 0 && this.props.history.push('/')
     }
     componentDidMount() {
         let { sentences } = this.props
@@ -56,7 +53,7 @@ class Result extends Component {
         }
         this.setState({ sentencesLearned: count, isLastSkipped })
         window.addEventListener('keypress', (e) => {
-            if(e.keycode == 13){
+            if (e.keycode === 13) {
                 this.props.history.push("/")
                 this.removeEvent()
             }
@@ -65,7 +62,7 @@ class Result extends Component {
 
     removeEvent = () => {
         window.removeEventListener('keypress', (e) => {
-            if(e.keycode == 13){
+            if (e.keycode === 13) {
                 this.props.history.push("/")
             }
         })
@@ -74,12 +71,12 @@ class Result extends Component {
         let { sentencesLearned, isLastSkipped, shareUrl, URLload } = this.state;
 
         return (<>
-            {this.state.copied && <AlertMessage message={`Share this link:`} link={true} href={shareUrl} />}
+
             {/* navbar */}
             <Navbar quit={true} />
             <ReactTooltip place="bottom" type="dark" effect="solid" />
             <div className="result_container">
-                {sentencesLearned == 0 ? <div>
+                {sentencesLearned === 0 ? <div>
                     <h4 style={{ cursor: "pointer" }}>You Haven't learned anything!</h4>
                     <MDBBtn outline={true} color="warning" onClick={() => this.props.history.push("/")} style={{ borderRadius: 50 }}>
                         Try Again!
@@ -95,15 +92,23 @@ class Result extends Component {
                         {URLload ?
                             <MDBBtn color="warning" outline={true} >{'  '}<i className="fa fa-spinner fa-spin" style={{ padding: '0 30px' }}></i>{'  '}</MDBBtn>
                             :
-                            <MDBBtn
-                                style={{ borderRadius: 50 }}
-                                color="success"
-                                outline={true}
-                                onClick={this.shareSet}
-                            >Share this set!</MDBBtn>}
+                            <>
+                                {this.state.shareUrl !== '' ?
+                                    <CopyToClipboard text={this.state.shareUrl} onCopy={() => {
+                                        AlertMessage({ message: 'Link has been copied to clpboard' })
+                                    }} >
+                                        <MDBBtn color="danger" outline={true} data-tip="Copy the link to clipboard">
+                                            Copy To Clipboard
+                                </MDBBtn>
+                                    </CopyToClipboard>
+                                    :
+                                    <MDBBtn color="warning" outline={true} onClick={this.shareSet} data-tip="Send the link to anyone">
+                                        Share this set
+                            </MDBBtn>}
+                            </>}
 
                     </div>}
-                    <FullScreenMode />
+                <FullScreenMode />
             </div>
         </>)
     }

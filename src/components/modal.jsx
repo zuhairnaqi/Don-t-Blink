@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
-import { Songs } from '../songs';
+import { Sets } from '../Sets';
 
 
 export default class Modal extends Component {
@@ -12,10 +12,10 @@ export default class Modal extends Component {
             {modal ?
                 <MDBModal isOpen={modal} toggle={toggle} backdrop={true}  size="lg"  full-height  position="left">
                     <MDBModalHeader toggle={this.props.toggle}>
-                        {Songs[modalId].title}
+                        {Sets[modalId].title}
                     </MDBModalHeader>
                     <MDBModalBody>
-                        {Songs[modalId].song}
+                        {Sets[modalId].song}
                     </MDBModalBody>
                     <MDBModalFooter>
                         <MDBBtn color="success" outline onClick={() => {
@@ -23,7 +23,7 @@ export default class Modal extends Component {
                                 move()
                             }
                             toggle()
-                            texttolearn(Songs[modalId].song)
+                            texttolearn(Sets[modalId].song)
                         }} >Learn It!</MDBBtn>
                         <MDBBtn color="black" outline onClick={toggle}>Close</MDBBtn>
                     </MDBModalFooter>

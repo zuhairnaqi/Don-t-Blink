@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import { MDBAnimation, MDBInput, MDBBtn, MDBCol, MDBContainer, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBListGroup, MDBListGroupItem } from "mdbreact"
 import InputComponent from './components/InputComponent/InputComponent';
 import Footer from './components/footer/footer'
 import {Navbar} from './components/navbar';
 import FullScreenMode from './components/FullScreen'
+import { ToastContainer } from 'react-toastify';
 
 class App extends React.Component {
   constructor(props) {
@@ -238,19 +238,14 @@ class App extends React.Component {
     this.setState({ modalId: id })
   }
   render() {
-    const { timerTime, startLearning, showIntroduction, showReady, inputStyle, alreadyShown } = this.state;
-    // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
-    let second = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2);
-    let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
-    // let hour = ("0" + Math.floor(timerTime / 3600000)).slice(-2);
-
+    const { showIntroduction, alreadyShown } = this.state;
+    
     return (
       <>
 
         {/* navbar */}
         <Navbar quit={false} />
         {/* nav and side bar ends here */}
-
         {/* Slider starts */}
         <div style={{ height: window.innerWidth > 700 ? window.innerHeight : window.innerHeight + 400 }} >
           <div className="App-header" style={{ opacity: this.state.opacityOfContainer }} onClick={() => this.setState({ showIntroduction: false })}>
@@ -261,7 +256,6 @@ class App extends React.Component {
                 <h2 hidden={this.state.hideReady}>focus on details</h2>
                 <h2 hidden={this.state.hideReady}><span className="blinking">do not</span> blink</h2>
               </div> :
-              (startLearning || !startLearning ?
                 <InputComponent
                   textToLearn={this.state.textToLearn}
                   modalIdFunc={this.modalId}
@@ -270,29 +264,10 @@ class App extends React.Component {
                   toggle={this.toggle}
                   navigate={this.props.history.push}
                   modal={this.state.modal} />
-                : <>
-                  {this.state.perfect && <div className="text-center" >
-                    <MDBInput type="text" className="text-center" style={inputStyle} value={this.state.inputWord} onChange={(e) => this.handleInputWord(e)} size="lg" />
-                    <h2>{this.state.selectedEnd}</h2>
-                    <MDBAnimation type="fadeIn" duration="1s" delay="2s" style={{ textAlign: 'center' }}>
-                      {/* Here is the counter of flashes */}
-                      <h2 className="p-2">{this.state.count} flashes, {minute}:{second} Seconds</h2>
-                      <MDBBtn outline={true} color="black" style={{ cursor: "pointer", margin: '30px 0', borderRadius: 50 }} onClick={() => {
-                        this.resetState()
-                        this.handleClick()
-                      }}>I want more</MDBBtn>
-                    </MDBAnimation>
-                  </div>}
-
-                  {this.state.te && <div>
-                    <h1>Thanks</h1>
-                  </div>}
-                </>
-              )}
+                }
           </div>
         </div>
         <FullScreenMode />
-        {/* Slider ends */}
         <Footer />
       </>
     );

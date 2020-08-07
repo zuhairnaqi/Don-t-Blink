@@ -512,9 +512,9 @@ button {
         font-size: 26px !important;
     }
 
-    button {
+    button, .quit_btn {
         font-size: 12px !important;
-        padding: 10px 30px !important;
+        padding: 10px 20px !important;
     }
 
     .os-phrases h2 {
@@ -634,4 +634,22 @@ button {
 }
 .react-switch-selector-wrapper {
     margin-top: 0 !important;
+}
+.Toastify__toast-container.Toastify__toast-container--bottom-left{
+    width: auto !important
+}
+
+.Toastify__toast--dark {
+    background: #333333;
+    color: white !important;
+    border-radius: 10px !important;
+    height: auto !important;
+}
+.Toastify__toast--dark .Toastify__toast-body a {
+    color: #b60808 !important;
+    text-decoration: underline;
+}
+
+button.Toastify__close-button.Toastify__close-button--dark {
+    color: white !important
 }

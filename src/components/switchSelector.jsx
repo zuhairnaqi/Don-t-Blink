@@ -24,7 +24,11 @@ const Switch = (props) => {
 
     const initialSelectedIndex = options.findIndex(({ value }) => value === "basic");
     return (
-        <div className="react-switch-selector-wrapper" style={{ width: 130, float: 'right' }}>
+        <div className="react-switch-selector-wrapper" style={{
+            width: '150px',
+            float: 'right',
+            height: '35px'
+        }}>
             <SwitchSelector
                 onChange={onChange}
                 options={options}

@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { MDBInput, MDBBtn, MDBAnimation, MDBRow, MDBContainer, MDBCol, MDBAlert, MDBListGroupItem, MDBListGroup } from "mdbreact"
 import './LearningSession.css';
 import '../../App.css';
-import AlertMessage from '../Alert';
+import {AlertMessage} from '../Alert';
 import VisualizerComponent from '../Visualization';
-import { Songs } from '../../songs';
+import { Sets } from '../../Sets';
 import Modal from '../modal';
 import { connect } from 'react-redux';
 import { setSentences } from '../../store/sentences/action';
+import { ToastContainer } from 'react-toastify';
 
 class LearningSession extends Component {
     constructor(props) {
@@ -44,7 +45,6 @@ class LearningSession extends Component {
             inputStyle: {
                 color: 'black'
             },
-            alert: '',
             textToLearn: ''
         }
     }
@@ -92,8 +92,7 @@ class LearningSession extends Component {
     splitSentences = () => {
         let { inputValue } = this.state;
         if (inputValue.length === 0) {
-            this.setState({ alert: 'Please add some text or paste it' });
-            setTimeout(() => this.setState({ alert: '' }), 1000)
+            AlertMessage({ message: 'Please add some text or paste it' });
             return;
         }
         let sentences = [];
@@ -132,12 +131,10 @@ class LearningSession extends Component {
 
     startLearning = () => {
         if (this.state.inputValue.length === 0) {
-            this.setState({ alert: 'Please add some text or paste it' });
-            setTimeout(() => this.setState({ alert: '' }), 1000)
+            AlertMessage({ message: 'Please add some text or paste it' });
         } else {
             if (this.state.sentences.length === 0) {
-                this.setState({ alert: 'Please learn first' });
-                setTimeout(() => this.setState({ alert: '' }), 1000)
+                AlertMessage({ message: 'Please learn first' });
             } else {
                 this.setState({ showSection: 1, hideReady: false })
             }
@@ -326,8 +323,6 @@ class LearningSession extends Component {
 
         return (
             <MDBContainer>
-                {this.state.alert.length > 0 ? <AlertMessage message={this.state.alert} /> : null}
-                {/* {showSection === 0 ? <p className="info_text" >Line breaks should be included with each sentence</p> : null} */}
                 {showSection === 0 && <>
                 
                 <MDBRow>
@@ -365,7 +360,7 @@ class LearningSession extends Component {
                             <h1 style={{ textAlign: 'center', padding: '10px 0' }}>Learn one of these contents:</h1>
                             <MDBContainer>
                                 <MDBListGroup style={{ width: '100%', cursor: 'pointer' }}>
-                                    {Songs.map(song => <MDBListGroupItem key={song.id} onClick={() => {
+                                    {Sets.map(song => <MDBListGroupItem key={song.id} onClick={() => {
                                         this.props.toggle()
                                         this.props.modalIdFunc(song.id)
                                     }} > {song.title} </MDBListGroupItem>)}

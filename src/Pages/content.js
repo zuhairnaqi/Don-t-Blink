@@ -1,7 +1,7 @@
 import React from 'react'
 import '../App.css';
-import { MDBCard, MDBListGroup, MDBListGroupItem, MDBCollapse, MDBBtn, MDBCol, MDBContainer, MDBSideNavLink, MDBSideNavCat, MDBRow, MDBSideNav, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavLink, MDBSideNavNav } from "mdbreact"
-import { Songs } from '../songs';
+import { MDBCard, MDBListGroup, MDBListGroupItem, MDBCollapse,  MDBCol, MDBContainer, MDBRow } from "mdbreact"
+import { Sets } from '../Sets';
 import { connect } from 'react-redux';
 import { setSentences } from '../store/sentences/action';
 import {Navbar} from '../components/navbar';
@@ -85,7 +85,7 @@ class ContentPage extends React.Component {
                     <MDBCol sm={12} md={8} lg={8} >
                         <MDBContainer>
                             <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '1em' }}>
-                                {Songs.map(song => <> <MDBListGroupItem style={styles.accordionContainer} key={song.id} onClick={this.toggleCollapse(song.id)} >
+                                {Sets.map((song, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={song.id} onClick={this.toggleCollapse(song.id)} >
                                     {song.title}
                                     <h6 style={styles.learnIt} onClick={() => this.splitSentences(song.song)}>Learn it!</h6>
                                 </MDBListGroupItem>
