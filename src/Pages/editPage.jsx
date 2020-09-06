@@ -11,8 +11,8 @@ import { setSentences, setMode } from '../store/sentences/action';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import { AlertMessage } from '../components/Alert'
-import firebase from '../config/firebaseConfig';
-import baseURL from '../config/baseURL';
+import firebase from '../Config/firebaseConfig';
+import baseURL from '../Config/baseURL';
 import { Navbar } from '../components/navbar';
 import Switch from '../components/switchSelector'
 import { Loader } from '../components/loader'
