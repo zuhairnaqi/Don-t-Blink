@@ -197,29 +197,29 @@ class LearningSession extends Component {
         let time = sentences[sentenceIndex].sentence.length * 30;
         let flash_time = time > 300 ? time : 300;
         setTimeout(() => {
-            this.setState({
-                showSection: 3,
-                clickedReady: true,
-                selectedEnd: this.state.per[Math.floor(Math.random() * this.state.per.length)],
-                inputHidden: false,
-                hideReady: true,
-                perfect: false,
-                inputWord: '',
-                showWord: false,
-                timerOn: true,
-                countsec: flash_time,
-                timerTime: this.state.timerTime,
-                timerStart: Date.now() - this.state.timerTime,
-                in: this.state.in + 1,
-                selectedNote: this.state.sentences[sentenceIndex].sentence,
-            })
-            this.timer = setInterval(() => {
                 this.setState({
-                    timerTime: Date.now() - this.state.timerStart
-                });
+                    showSection: 3,
+                    clickedReady: true,
+                    selectedEnd: this.state.per[Math.floor(Math.random() * this.state.per.length)],
+                    inputHidden: false,
+                    hideReady: true,
+                    perfect: false,
+                    inputWord: '',
+                    showWord: false,
+                    timerOn: true,
+                    countsec: flash_time,
+                    timerTime: this.state.timerTime,
+                    timerStart: Date.now() - this.state.timerTime,
+                    in: this.state.in + 1,
+                    selectedNote: this.state.sentences[sentenceIndex].sentence,
+                })
+                this.timer = setInterval(() => {
+                    this.setState({
+                        timerTime: Date.now() - this.state.timerStart
+                    });
 
-            }, 10);
-        }, flash_time) // milliseconds on each word in flash 
+                }, 10);
+            }, flash_time) // milliseconds on each word in flash 
     }
 
     handleInputWord = e => {
@@ -372,73 +372,81 @@ class LearningSession extends Component {
     }
 
     render() {
-        const {
-            showSection,
-            hideReady,
-            sentences,
-            sentenceIndex,
-            inputWord,
-            timerTime,
-            flashCount,
-            inputStyle,
-            againSentenceMessage,
-            enableColor,
-            enableSound,
-            hideAll,
-        } = this.state;
+            const {
+                showSection,
+                hideReady,
+                sentences,
+                sentenceIndex,
+                inputWord,
+                timerTime,
+                flashCount,
+                inputStyle,
+                againSentenceMessage,
+                enableColor,
+                enableSound,
+                hideAll,
+            } = this.state;
 
-        // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
-        let second = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2);
-        let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
-        // let hour = ("0" + Math.floor(timerTime / 3600000)).slice(-2);
+            // let centiseconds = ("0" + (Math.floor(timerTime / 10) % 100)).slice(-2);
+            let second = ("0" + (Math.floor(timerTime / 1000) % 60)).slice(-2);
+            let minute = ("0" + (Math.floor(timerTime / 60000) % 60)).slice(-2);
+            // let hour = ("0" + Math.floor(timerTime / 3600000)).slice(-2);
 
 
-        let [notTriedSentencesCount, notMasteredCount, masteredCount] = [0, 0, 0];
-        sentences.forEach(obj => {
-            if (!obj.tried) {
-                ++notTriedSentencesCount;
-            } else {
-                if (obj.mastered) {
-                    ++masteredCount;
-                } else if (obj.mastered === false) {
-                    ++notMasteredCount;
+            let [notTriedSentencesCount, notMasteredCount, masteredCount] = [0, 0, 0];
+            sentences.forEach(obj => {
+                if (!obj.tried) {
+                    ++notTriedSentencesCount;
+                } else {
+                    if (obj.mastered) {
+                        ++masteredCount;
+                    } else if (obj.mastered === false) {
+                        ++notMasteredCount;
+                    }
                 }
-            }
-        })
+            })
 
 
-        return (
-            <>
-                {/* navbar */}
-                <Navbar quit={true} hideAll={hideAll || hideReady} />
-                <MDBContainer className="main_container"
-                    onMouseMove={() => {
-                        if (this.state.hideAll) {
-                            this.setState({ hideAll: false })
+            return ( <> 
+            { /* navbar */ } <Navbar quit = { true }
+                    hideAll = { hideAll || hideReady }/> <MDBContainer className = "main_container"
+                    onMouseMove = {
+                        () => {
+                            if (this.state.hideAll) {
+                                this.setState({ hideAll: false })
+                            }
                         }
-                    }}
-                >
-                    <div className="flash_anim" >
-                        <h2 hidden={!this.state.startLearning}><span className="blinking">do not</span> blink</h2>
-                        {!this.state.startLearning &&
-                            <MDBAnimation type="fadeIn" duration="1s" delay="1s" >
-                                <small className='glow' style={{ textAlign: 'center' }} hidden={this.state.startLearning || this.state.hideReady}><b>{window.innerWidth < 600 ? 'Tap' : 'Press Enter'}</b> to see the first flash </small>
-                            </MDBAnimation>}
-                    </div>
+                    } >
+                    <div className = "flash_anim" >
+                    <h2 hidden={!this.state.startLearning } > <span className = "blinking" > do not </span> blink</h2> {!this.state.startLearning &&
+                        <MDBAnimation type = "fadeIn"
+                        duration = "1s"
+                        delay = "1s" >
+                        <small className = 'glow'
+                        style = {
+                            { textAlign: 'center' } }
+                        hidden = { this.state.startLearning || this.state.hideReady } > <b> { window.innerWidth < 600 ? 'Tap' : 'Press Enter' } </b> to see the first flash </small >
+                        </MDBAnimation>} </div>
 
-                    {/* First flash section */}
-                    {showSection === 1 && hideReady && <div className="flash_anim">
-                        <h2 style={{ fontSize: "2rem", textAlign: 'center', fontWeight: 400, cursor: "pointer" }}>flash {flashCount}</h2>
-                    </div>}
+                        { /* First flash section */ } {
+                            showSection === 1 && hideReady && < div className = "flash_anim" >
+                                <h2 style = {
+                                    { fontSize: "2rem", textAlign: 'center', fontWeight: 400, cursor: "pointer" } } > flash { flashCount } </h2> </div>}
 
-                    {/* Question section */}
-                    {showSection === 2 && hideReady && <h1 style={{ fontSize: "2rem", marginTop: 10, textAlign: 'center', fontWeight: 400 }}>{sentences[sentenceIndex] && sentences[sentenceIndex].sentence}</h1>}
+                            { /* Question section */ } {
+                                showSection === 2 && hideReady && < h1 style = {
+                                    { fontSize: "2rem", marginTop: 10, textAlign: 'center', fontWeight: 400 } } > { sentences[sentenceIndex] && sentences[sentenceIndex].sentence } </h1>}
 
 
-                    {/* Count Section */}
-                    {hideReady && <div style={(hideAll || hideReady) ? { position: 'fixed', top: 10, left: 0, right: 0 } : {}}>
-                        <div className="left_count">
-                            <h2 style={{ fontSize: (hideAll || hideReady) ? 'medium' : 'inherit', marginTop: '12px' }}> <span data-tip={`This Was Flash ${this.state.count}`} >  {this.state.count} </span>  <span data-tip={`It Took ${(this.state.countsec / 1000).toFixed(1)} seconds`} > &nbsp;{(this.state.countsec / 1000).toFixed(1)}s</span> </h2>
+                                { /* Count Section */ } {
+                                    hideReady && < div style = {
+                                            (hideAll || hideReady) ? { position: 'fixed', top: 10, left: 0, right: 0 } : {} } >
+                                        <div className = "left_count" >
+                                        <h2 style = {
+                                            { fontSize: (hideAll || hideReady) ? 'medium' : 'inherit', marginTop: '12px' } } > <span data-tip = { `This Was Flash ${this.state.count}` } > { this.state.count } </span>  <span data-tip={`It Took ${(this.state.countsec /
+                                    1000).toFixed(1)
+                            }
+                            seconds `} > &nbsp;{(this.state.countsec / 1000).toFixed(1)}s</span> </h2>
                             <div className={(hideAll || hideReady) ? 'opa_hide custom-control custom-switch' : 'opa_show custom-control custom-switch'} >
                                 <input
                                     type='checkbox'
@@ -459,11 +467,19 @@ class LearningSession extends Component {
 
                         <div className="right_count">
                             <h2 style={{ fontSize: (hideAll || hideReady) ? 'medium' : 'inherit', marginTop: '12px' }}>
-                                {this.state.mode == 'memory' && <>
-                                    <span data-tip={`${notTriedSentencesCount} more new`} >{notTriedSentencesCount}</span>
-                                    <span data-tip={`${notMasteredCount} to try again`}> &nbsp;{notMasteredCount} &nbsp; </span>
+                                {this.props.mode == 'memory' && <>
+                                    <span data-tip={`
+                            ${ notTriedSentencesCount }
+                            more new `} >{notTriedSentencesCount}</span>
+                                    <span data-tip={`
+                            ${ notMasteredCount }
+                            to
+                            try again `}> &nbsp;{notMasteredCount} &nbsp; </span>
                                 </>}
-                                <span data-tip={`${masteredCount} out of ${sentences.length} mastered`} > {masteredCount}/{sentences.length}</span>
+                                <span data-tip={`
+                            ${masteredCount }
+                            out of ${ sentences.length }
+                            mastered `} > {masteredCount}/{sentences.length}</span>
                             </h2>
                             <div className={(hideAll || hideReady) ? 'opa_hide custom-control custom-switch' : 'opa_show custom-control custom-switch'}>
                                 <input
@@ -515,10 +531,10 @@ class LearningSession extends Component {
                             <MDBRow style={{ textAlign: 'center' }}>
                                 <MDBCol size={'4'} >
                                     <ReactTooltip type="dark" effect="solid" />
-                                    <MDBBtn data-tip={Instruction} color="black" outline style={{ borderRadius: 50 }} >INFO</MDBBtn>
+                                    <MDBBtn data-tip={Instruction} className="no_border" color="black" outline style={{ borderRadius: 50 }} >INFO</MDBBtn>
                                 </MDBCol>
                                 <MDBCol size={'4'} >
-                                    <MDBBtn data-tip="Press Shift+Enter to skip this sentence." onClick={this.SkipSentence} color="black" outline style={{ borderRadius: 50 }} >SKIP</MDBBtn>
+                                    <MDBBtn className="no_border" data-tip="Press Shift+Enter to skip this sentence." onClick={this.SkipSentence} color="black" outline style={{ borderRadius: 50 }} >SKIP</MDBBtn>
                                 </MDBCol>
                                 <MDBCol size={'4'} >
                                     <MDBBtn href="/" className={'quit_btn'} color="black" data-tip="Quit & Go to the Main Screen" outline style={{ borderRadius: 50 }}>QUIT</MDBBtn>
@@ -569,8 +585,6 @@ const mapStateToProps = state => ({
     sentences: state.sentences,
     mode: state.mode,
 })
-
 const mapDispatchToProps = { setSentences, setMode };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LearningSession);
-

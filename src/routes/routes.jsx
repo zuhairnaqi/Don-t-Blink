@@ -7,6 +7,7 @@ import Content from '../Pages/content';
 import LearningSession from '../Pages/LearningSession/LearningSession';
 import ResultPage from '../Pages/Result/Result';
 import EditPage from '../Pages/editPage';
+import {CookieAndPrivacy} from '../components/CookieAndPrivacy';
 import { ToastContainer } from 'react-toastify';
 
 export default class Routes extends Component {
@@ -24,6 +25,7 @@ export default class Routes extends Component {
                 <Route exact path="/result-page" component={ResultPage} />
                 {/* <Route exact path="*" component={} /> */}
             </Switch>
+            <CookieAndPrivacy />
         </BrowserRouter>)
     }
 }
