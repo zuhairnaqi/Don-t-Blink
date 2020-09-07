@@ -1,10 +1,10 @@
 import React from 'react'
 import '../App.css';
-import { MDBCard, MDBListGroup, MDBListGroupItem, MDBCollapse,  MDBCol, MDBContainer, MDBRow } from "mdbreact"
+import { MDBTabPane, MDBTabContent, MDBNav, MDBNavItem, MDBNavLink, MDBCard, MDBListGroup, MDBListGroupItem, MDBCollapse, MDBCol, MDBContainer, MDBRow } from "mdbreact"
 import { Sets } from '../Sets';
 import { connect } from 'react-redux';
 import { setSentences } from '../store/sentences/action';
-import {Navbar} from '../components/navbar';
+import { Navbar } from '../components/navbar';
 import FullScreenMode from '../components/FullScreen';
 
 class ContentPage extends React.Component {
@@ -14,7 +14,8 @@ class ContentPage extends React.Component {
             openNav: false,
             desktop: false,
             isOpen: false,
-            collapseID: ''
+            collapseID: '',
+            activeItem: "1"
         }
     }
 
@@ -72,32 +73,93 @@ class ContentPage extends React.Component {
         this.props.setSentences(sentences);
         this.props.history.push("editCode");
     }
+
+    toggle = tab => e => {
+        if (this.state.activeItem !== tab) {
+            this.setState({
+                activeItem: tab
+            });
+        }
+    };
     render() {
 
         return <div>
-           {/* navbar */}
-           <Navbar quit={false} />
-            <MDBContainer style={{ height: window.innerHeight, marginTop: '20%' }}>
+            {/* navbar */}
+            <Navbar quit={false} />
+            <MDBContainer style={{ height: window.innerHeight, marginTop: '10%' }}>
                 <MDBRow>
                     <MDBCol size={2} md={4} lg={4}>
                         <h1>Content</h1>
                     </MDBCol>
                     <MDBCol sm={12} md={8} lg={8} >
                         <MDBContainer>
-                            <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '1em' }}>
-                                {Sets.map((song, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={song.id} onClick={this.toggleCollapse(song.id)} >
-                                    {song.title}
-                                    <h6 style={styles.learnIt} onClick={() => this.splitSentences(song.song)}>Learn it!</h6>
-                                </MDBListGroupItem>
-                                    <MDBCard >
-                                        <MDBContainer >
-                                            <MDBCollapse isOpen={this.state.collapseID} id={song.id} >
-                                                {song.song.split('\n').map(data => <p style={{textAlign: 'center'}}>{data}<br /> </p>)}
-                                            </MDBCollapse>
-                                        </MDBContainer>
-                                    </MDBCard>
-                                </>)}
-                            </MDBListGroup>
+                            <MDBNav className="nav-tabs mt-5">
+                                <MDBNavItem>
+                                    <MDBNavLink link to="#" active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >
+                                        Music
+                                    </MDBNavLink>
+                                </MDBNavItem>
+                                <MDBNavItem>
+                                    <MDBNavLink link to="#" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >
+                                        Grammer
+                                    </MDBNavLink>
+                                </MDBNavItem>
+                                <MDBNavItem>
+                                    <MDBNavLink link to="#" active={this.state.activeItem === "3"} onClick={this.toggle("3")} role="tab" >
+                                        Idiom
+                                    </MDBNavLink>
+                                </MDBNavItem>
+                            </MDBNav>
+                            <MDBTabContent activeItem={this.state.activeItem} >
+                                <MDBTabPane tabId="1" role="tabpanel">
+                                    <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '1em' }}>
+                                        {Sets.songs.map((song, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={song.id} onClick={this.toggleCollapse(song.id)} >
+                                            {song.title}
+                                            <h6 style={styles.learnIt} onClick={() => this.splitSentences(song.song)}>Learn it!</h6>
+                                        </MDBListGroupItem>
+                                            <MDBCard >
+                                                <MDBContainer >
+                                                    <MDBCollapse isOpen={this.state.collapseID} id={song.id} >
+                                                        {song.song.split('\n').map(data => <p style={{ textAlign: 'center' }}>{data}<br /> </p>)}
+                                                    </MDBCollapse>
+                                                </MDBContainer>
+                                            </MDBCard>
+                                        </>)}
+                                    </MDBListGroup>
+                                </MDBTabPane>
+                                <MDBTabPane tabId="2" role="tabpanel">
+                                    <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '1em' }}>
+                                        {Sets.grammers.map((song, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={song.id} onClick={this.toggleCollapse(song.id)} >
+                                            {song.title}
+                                            <h6 style={styles.learnIt} onClick={() => this.splitSentences(song.song)}>Learn it!</h6>
+                                        </MDBListGroupItem>
+                                            <MDBCard >
+                                                <MDBContainer >
+                                                    <MDBCollapse isOpen={this.state.collapseID} id={song.id} >
+                                                        {song.song.split('\n').map(data => <p style={{ textAlign: 'center' }}>{data}<br /> </p>)}
+                                                    </MDBCollapse>
+                                                </MDBContainer>
+                                            </MDBCard>
+                                        </>)}
+                                    </MDBListGroup>
+                                </MDBTabPane>
+                                <MDBTabPane tabId="3" role="tabpanel">
+                                    <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '1em' }}>
+                                        {Sets.idioms.map((song, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={song.id} onClick={this.toggleCollapse(song.id)} >
+                                            {song.title}
+                                            <h6 style={styles.learnIt} onClick={() => this.splitSentences(song.song)}>Learn it!</h6>
+                                        </MDBListGroupItem>
+                                            <MDBCard >
+                                                <MDBContainer >
+                                                    <MDBCollapse isOpen={this.state.collapseID} id={song.id} >
+                                                        {song.song.split('\n').map(data => <p style={{ textAlign: 'center' }}>{data}<br /> </p>)}
+                                                    </MDBCollapse>
+                                                </MDBContainer>
+                                            </MDBCard>
+                                        </>)}
+                                    </MDBListGroup>
+                                </MDBTabPane>
+                            </MDBTabContent>
                         </MDBContainer>
                     </MDBCol>
                 </MDBRow>

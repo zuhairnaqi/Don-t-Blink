@@ -1,12 +1,15 @@
-export const Sets = [{
-        id: 0,
-        title: 'Believer',
-        song: "First things first I'ma say all the words inside my head I'm fired up and tired of the way that things have been, oh ooh The way that things have been, oh ooh Second thing second Don't you tell me what you think that I can be I'm the one at the sail, I'm the master of my sea, oh ooh The master of my sea, oh ooh I was broken from a young age Taking my sulking to the masses Write down my poems for the few That looked at me, took to me, shook to me, feeling me Singing from heartache, from the pain Taking my message from the veins Speaking my lesson from the brain Seeing the beauty through the pain You made me a, you made me a believer, believer You break me down, you build me up, believer, believer Oh let the bullets fly, oh let them rain My life, my love, my drive, it came from pain Third things third Send a prayer to the ones up above All the hate that you've heard has turned your spirit to a dove, oh ooh Your spirit up above, oh ooh I was choking in the crowd Building my rain up in the cloud Falling like ashes to the ground Hoping my feelings, they would drown But they never did, ever lived, ebbing and flowing Inhibited, limited Til it broke up and it rained down It rained down, like pain! My life, my love, my drive, it came from pain Last things last By the grace of the fire and the flames You're the face of the future, the blood in my veins, oh ooh The blood in my veins, oh ooh"
-    },
-    {
-        id: 1,
-        title: "Punch",
-        song: `Han bang puncherda hwicheonggeoryeo
+export const Sets = {
+    grammers: [],
+    idioms: [],
+    songs: [{
+            id: 0,
+            title: 'Believer',
+            song: "First things first I'ma say all the words inside my head I'm fired up and tired of the way that things have been, oh ooh The way that things have been, oh ooh Second thing second Don't you tell me what you think that I can be I'm the one at the sail, I'm the master of my sea, oh ooh The master of my sea, oh ooh I was broken from a young age Taking my sulking to the masses Write down my poems for the few That looked at me, took to me, shook to me, feeling me Singing from heartache, from the pain Taking my message from the veins Speaking my lesson from the brain Seeing the beauty through the pain You made me a, you made me a believer, believer You break me down, you build me up, believer, believer Oh let the bullets fly, oh let them rain My life, my love, my drive, it came from pain Third things third Send a prayer to the ones up above All the hate that you've heard has turned your spirit to a dove, oh ooh Your spirit up above, oh ooh I was choking in the crowd Building my rain up in the cloud Falling like ashes to the ground Hoping my feelings, they would drown But they never did, ever lived, ebbing and flowing Inhibited, limited Til it broke up and it rained down It rained down, like pain! My life, my love, my drive, it came from pain Last things last By the grace of the fire and the flames You're the face of the future, the blood in my veins, oh ooh The blood in my veins, oh ooh"
+        },
+        {
+            id: 1,
+            title: "Punch",
+            song: `Han bang puncherda hwicheonggeoryeo
     Haemeo aut nallyeo
     'Cause I'm a clean fighter
     Mwol mangseollyeo ne syeopeureun neuryeo
@@ -32,11 +35,11 @@ export const Sets = [{
     As loud as we can get
     Junbihan jaga chajihae
     We got the championship`
-    },
-    {
-        id: 2,
-        title: 'Ready to Start',
-        song: `The businessmen are drinking my blood
+        },
+        {
+            id: 2,
+            title: 'Ready to Start',
+            song: `The businessmen are drinking my blood
         Like the kids in art school said they would
         And I guess I'll just begin again
         You say, "can we still be friends?"
@@ -85,11 +88,11 @@ export const Sets = [{
         And if I was yours
         But I'm not
         `
-    },
-    {
-        id: 3,
-        title: "Baby Mine",
-        song: `Baby mine, don't you cry
+        },
+        {
+            id: 3,
+            title: "Baby Mine",
+            song: `Baby mine, don't you cry
         Baby mine, dry your eyes
         Rest your head close to my heart
         Never to part, baby of mine
@@ -112,11 +115,11 @@ export const Sets = [{
         Oh, baby of mine
         Oh, baby of mine
         Oh, baby of mine`
-    },
-    {
-        id: 4,
-        title: 'Signs Of Life',
-        song: `Those cool kids
+        },
+        {
+            id: 4,
+            title: 'Signs Of Life',
+            song: `Those cool kids
         Stuck in the past
         Apartments of cigarette ash
         Wait outside until it begins
@@ -159,11 +162,11 @@ export const Sets = [{
         Looking for signs every night
         But there's no signs of life
         So we do it again`
-    },
-    {
-        id: 5,
-        title: "Peter Pan",
-        song: `In my dreams you're dying
+        },
+        {
+            id: 5,
+            title: "Peter Pan",
+            song: `In my dreams you're dying
         It picks me up, I can't stop crying
         I just wanna live forever
         Keep my promises, keep it together
@@ -199,11 +202,11 @@ export const Sets = [{
         Come on baby, you've got no plans
         A little something within the blood
         I can not live, with so much love singing`
-    },
-    {
-        id: 6,
-        title: 'Good God Damn',
-        song: `You want to get messed up?
+        },
+        {
+            id: 6,
+            title: 'Good God Damn',
+            song: `You want to get messed up?
         When the times get rough
         Put your favorite record on baby
         And fill the bathtub up
@@ -249,11 +252,11 @@ export const Sets = [{
         If He made you
         
         If He made you`
-    },
-    {
-        id: 7,
-        title: "Everything Now",
-        song: `Every inch of sky's got a star
+        },
+        {
+            id: 7,
+            title: "Everything Now",
+            song: `Every inch of sky's got a star
         Every inch of skin's got a scar
         I guess that you've got everything now
         Every inch of space in your head
@@ -301,11 +304,11 @@ export const Sets = [{
         (Everything now!)
         (Everything now!)
         `
-    },
-    {
-        id: 8,
-        title: "We Don't Deserve Love",
-        song: `Keep both eyes on the road tonight
+        },
+        {
+            id: 8,
+            title: "We Don't Deserve Love",
+            song: `Keep both eyes on the road tonight
         'Cause I'm driving home to you
         Terrible song on the radio
         Baby, what else is new?
@@ -381,11 +384,11 @@ export const Sets = [{
         And if I don't deserve love
         Could we deserve?`
 
-    },
-    {
-        id: 9,
-        title: "Electric Blue",
-        song: `Summer's gone and so are you
+        },
+        {
+            id: 9,
+            title: "Electric Blue",
+            song: `Summer's gone and so are you
         See the sky electrocute
         A thousand boys that look like you
         Cover my eyes electric blue
@@ -463,5 +466,6 @@ export const Sets = [{
         Cover my eyes electric blue
         Every single night I dream about you
         Every single night I dream about you`
-    }
-]
+        }
+    ]
+}

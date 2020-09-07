@@ -5,7 +5,7 @@ import { AlertMessage } from '../Alert';
 import { Sets } from '../../Sets';
 import { connect } from 'react-redux';
 import { setSentences } from '../../store/sentences/action';
-
+import {Link} from 'react-router-dom'
 class InputComponent extends Component {
     constructor(props) {
         super(props);
@@ -152,10 +152,22 @@ class InputComponent extends Component {
                             <div className="content">
                                 <MDBContainer>
                                     <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '.6em' }}>
-                                        {Sets.map(song => song.id < 10 && <MDBListGroupItem key={song.id} onClick={() => {
+                                        {Sets.songs.map(song => song.id < 3 && <MDBListGroupItem key={song.id} onClick={() => {
                                             this.setState({ inputValue: song.song })
                                             AlertMessage({ message: `"${song.title}" has been added` })
                                         }} > {song.title} </MDBListGroupItem>)}
+                                        {Sets.grammers.map(grammer => grammer.id < 3 && <MDBListGroupItem key={grammer.id} onClick={() => {
+                                            this.setState({ inputValue: grammer.grammer })
+                                            AlertMessage({ message: `"${grammer.title}" has been added` })
+                                        }} > {grammer.title} </MDBListGroupItem>)}
+                                        {Sets.idioms.map(idiom => idiom.id < 3 && <MDBListGroupItem key={idiom.id} onClick={() => {
+                                            this.setState({ inputValue: idiom.idiom })
+                                            AlertMessage({ message: `"${idiom.title}" has been added` })
+                                        }} > {idiom.title} </MDBListGroupItem>)}
+                                        <Link to="/content" ><MDBListGroupItem style={{color: "#1985cf"}}>
+                                            See more sets to learn...
+                                        </MDBListGroupItem>
+                                        </Link>
                                     </MDBListGroup>
                                 </MDBContainer>
                             </div>

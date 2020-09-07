@@ -74,7 +74,7 @@ class LearningSession extends Component {
             }
             setTimeout(() => {
                 this.setState({ startLearning: false });
-            }, 1500)
+            }, 3000)
         } else {
             this.props.history.push('/')
         }
@@ -337,6 +337,7 @@ class LearningSession extends Component {
             this.setState({ sentenceIndex: sentenceIndex + 1 })
             this.resetState();
         }
+        AlertMessage({ message: 'Skipped.' });
 
     }
 
@@ -418,7 +419,9 @@ class LearningSession extends Component {
                         }
                     } >
                     <div className = "flash_anim" >
-                    <h2 hidden={!this.state.startLearning } > <span className = "blinking" > do not </span> blink</h2> {!this.state.startLearning &&
+                    <h2 hidden={!this.state.startLearning } > <span className = "blinking" > do not </span> blink</h2> 
+                    <h2 hidden={!this.state.startLearning } > { window.innerWidth < 600 ? 'Tap' : 'Press Enter' } to see the first flash </h2>
+                    {!this.state.startLearning &&
                         <MDBAnimation type = "fadeIn"
                         duration = "1s"
                         delay = "1s" >
@@ -426,7 +429,8 @@ class LearningSession extends Component {
                         style = {
                             { textAlign: 'center' } }
                         hidden = { this.state.startLearning || this.state.hideReady } > <b> { window.innerWidth < 600 ? 'Tap' : 'Press Enter' } </b> to see the first flash </small >
-                        </MDBAnimation>} </div>
+                        </MDBAnimation>} 
+                        </div>
 
                         { /* First flash section */ } {
                             showSection === 1 && hideReady && < div className = "flash_anim" >

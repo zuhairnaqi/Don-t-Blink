@@ -122,15 +122,14 @@ class EditCode extends Component {
 	ExceedAlert = (code) => {
 		if (!code && !this.state.exceed) {
 
-			this.state.sentences.forEach(Data => Data.length >= 40 ? this.setState({ exceed: true }) : null)
+			this.state.sentences.forEach(Data => Data.length >= 60 ? this.setState({ exceed: true }) : null)
 
 		} else if (code && !this.state.exceed) {
-			code.split('\n').forEach(Data => Data.length >= 40 ? this.setState({ exceed: true }) : null)
+			code.split('\n').forEach(Data => Data.length >= 60 ? this.setState({ exceed: true }) : null)
 			this.setState({ sentencesLength: code.split('\n').length })
 		}
-		if (this.state.exceed) {
-			AlertMessage({ message: 'One of your sentence is too long, try to make it short' })
-		}
+		// AlertMessage({ message: 'One of your sentence is too long, try to make it short' })
+
 	}
 
 	shareSet = () => {
@@ -181,7 +180,7 @@ class EditCode extends Component {
 							<ReactTooltip place="bottom" type="dark" effect="solid" />
 							{isShareLink ?
 								<>
-								<br />
+									<br />
 									<h6>You will learn {this.state.sentencesLength} sentences. <i
 										data-tip="Make sure they are not too long. Hit enter if you want to	add a line. Remove things you don't want to learn.Each sentence from the box will blink very quickly. Your job is to remember it and write it down perfectly. Your job is to master this text. You must write all of the lines after the first flash."
 										className="fa fa-info-circle"
@@ -190,14 +189,24 @@ class EditCode extends Component {
 								Good luck!</h6>
 								</> :
 								<>
-								<br />
-								<h6 >You will learn {this.state.sentencesLength} sentences. <i
-									data-tip="Make sure they are not too long. Hit enter if you want to add a line. Remove things you don't want to learn."
-									className="fa fa-info-circle"
-								></i> <br />
+									<br />
+									<h6 >You will learn {this.state.sentencesLength} sentences. <i
+										data-tip="Make sure they are not too long. Hit enter if you want to add a line. Remove things you don't want to learn."
+										className="fa fa-info-circle"
+									></i> <br />
 								Your job is to master this text. You must write all of the lines after the first flash.
 								</h6>
 								</>}
+						</div>
+						<MDBRow style={{ marginTop: 20 }}>
+							<MDBCol size={'12'} style={{ textAlign: 'center' }}>
+								<Switch />
+							</MDBCol>
+						</MDBRow>
+						<div style={{ textAlign: 'center' }}>
+							<MDBBtn color="success" outline={true} onClick={() => this.splitSentences()}>
+								Start Learning
+                        </MDBBtn>
 						</div>
 						{this.state.showEditor && <CodeMirror
 							className="editor"
@@ -208,14 +217,16 @@ class EditCode extends Component {
 							}}
 							options={options}
 						/>}
-						<MDBRow style={{ marginTop: 20 }}>
-							<MDBCol size={'6'}>
-								<h5>Mode: <b style={{ textTransform: 'capitalize' }}>{mode}</b></h5>
-							</MDBCol>
-							<MDBCol size={'6'} style={{ textAlign: 'right' }}>
-								<Switch />
-							</MDBCol>
-						</MDBRow>
+						{this.state.exceed && <p
+							style={{
+								textAlign: 'center',
+								fontWeight: 'bolder',
+								border: '1px dashed black',
+								marginTop: 10,
+								letterSpacing: 3
+							}}
+						><small>One of your sentence is too long, try to make it short</small></p>}
+						
 						{this.state.hideMessage && <div style={{
 							textAlign: 'center',
 							margin: '10px 0',
@@ -233,9 +244,6 @@ class EditCode extends Component {
 							}
 						</div>}
 						<div style={{ textAlign: 'center' }}>
-							<MDBBtn color="success" outline={true} onClick={() => this.splitSentences()}>
-								Start Learning
-                        </MDBBtn>
 							<ReactTooltip place="bottom" type="dark" effect="solid" />
 							{URLload ?
 								<MDBBtn color="warning" outline={true} >{'  '}<i className="fa fa-spinner fa-spin" style={{ padding: '0 30px' }}></i>{'  '}</MDBBtn>

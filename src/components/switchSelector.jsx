@@ -7,12 +7,12 @@ const Switch = (props) => {
 
     const options = [
         {
-            label: "Memory",
+            label: "+Memory",
             value: "memory",
             selectedBackgroundColor: "#0570b9",
         },
         {
-            label: "Basic",
+            label: "Focus",
             value: "basic",
             selectedBackgroundColor: "#0570b9"
         }
@@ -26,7 +26,6 @@ const Switch = (props) => {
     return (
         <div className="react-switch-selector-wrapper" style={{
             width: '150px',
-            float: 'right',
             height: '35px'
         }}>
             <SwitchSelector
