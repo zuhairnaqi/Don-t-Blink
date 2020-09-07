@@ -101,38 +101,6 @@ class LearningSession extends Component {
         }, 1200)
     }
 
-    learnAgain = () => {
-        this.setState({
-            sentences: this.props.sentences || [], // separated sentences
-            showSection: 1, // show respective containers
-            hideReady: true, // Show Ready text
-            sentenceIndex: 0, // Sentence index shows the current sentence
-            inputWord: '', // the input which user is answering while learning
-
-            per: ['perfect', 'amazing', 'flawless'],
-            selectedNote: "",
-
-            //Here is the counter of flashes and length of the first flash states
-            count: 1,
-            countsec: 0,
-            perfect: false,
-            inputHidden: true,
-            againHidden: true,
-            showWord: false,
-            timerOn: false,
-            timerStart: 0,
-            timerTime: 0,
-            color: "white",
-            tryAgain: false,
-            in: 0,
-            te: false,
-            flashCount: 1,
-            againSentenceMessage: false,
-            flashBannerTiming: 2000 // Flash one don't blink text banner timing
-        })
-    }
-
-
     splitSentences = () => {
         let { inputValue } = this.state;
         if (inputValue.length === 0) {
@@ -208,11 +176,11 @@ class LearningSession extends Component {
                     showWord: false,
                     timerOn: true,
                     countsec: flash_time,
-                    timerTime: this.state.timerTime,
                     timerStart: Date.now() - this.state.timerTime,
                     in: this.state.in + 1,
                     selectedNote: this.state.sentences[sentenceIndex].sentence,
                 })
+                clearInterval(this.timer);
                 this.timer = setInterval(() => {
                     this.setState({
                         timerTime: Date.now() - this.state.timerStart
@@ -322,19 +290,20 @@ class LearningSession extends Component {
     }
 
     SkipSentence = () => {
-        let { sentences, sentenceIndex } = this.state;
+        let { sentenceIndex, sentences } = this.state;
+        let updatedSentences = sentences.filter((sentence, i) => sentenceIndex !== i);
         if (sentenceIndex === sentences.length - 1) {
             this.setState({
                 perfect: true,
                 timerOn: false,
                 showSection: 4,
                 inputWord: '',
-                sentenceIndex: sentenceIndex + 1
+                sentences: updatedSentences,
             })
             this.props.setSentences(sentences)
             this.props.history.push('result-page')
         } else {
-            this.setState({ sentenceIndex: sentenceIndex + 1 })
+            this.setState({ sentences: updatedSentences })
             this.resetState();
         }
         AlertMessage({ message: 'Skipped.' });
