@@ -11,8 +11,8 @@ import { setSentences, setMode } from '../store/sentences/action';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import { AlertMessage } from '../components/Alert'
-import firebase from '../Config/firebaseConfig';
-import baseURL from '../Config/baseURL';
+import firebase from '../config/firebaseConfig';
+import baseURL from '../config/baseURL';
 import { Navbar } from '../components/navbar';
 import Switch from '../components/switchSelector'
 import { Loader } from '../components/loader'
@@ -230,7 +230,7 @@ class EditCode extends Component {
 						{this.state.hideMessage && <div style={{
 							textAlign: 'center',
 							margin: '10px 0',
-							background: 'rgb(51 51 51 / 79%)',
+							background: 'rgb(51 51 51 / 58%)',
 							color: 'white',
 							padding: '7px 20px',
 							borderRadius: '10px',

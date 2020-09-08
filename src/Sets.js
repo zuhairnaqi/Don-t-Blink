@@ -1,3 +1,24 @@
+// Grammer's Object
+// grammers : {
+//     id: Number,
+//     title: String,
+//     grammer: String
+// }
+
+// Idiom's Object
+// idioms : {
+//     id: Number,
+//     title: String,
+//     idiom: String
+// }
+
+// Song's Object
+// songs : {
+//     id: Number,
+//     title: String,
+//     song: String
+// }
+
 export const Sets = {
     grammers: [],
     idioms: [],

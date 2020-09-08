@@ -26,7 +26,8 @@ const Switch = (props) => {
     return (
         <div className="react-switch-selector-wrapper" style={{
             width: '150px',
-            height: '35px'
+            height: '35px',
+            margin: '0 auto'
         }}>
             <SwitchSelector
                 onChange={onChange}

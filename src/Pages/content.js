@@ -129,14 +129,14 @@ class ContentPage extends React.Component {
                                 </MDBTabPane>
                                 <MDBTabPane tabId="2" role="tabpanel">
                                     <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '1em' }}>
-                                        {Sets.grammers.map((song, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={song.id} onClick={this.toggleCollapse(song.id)} >
-                                            {song.title}
-                                            <h6 style={styles.learnIt} onClick={() => this.splitSentences(song.song)}>Learn it!</h6>
+                                        {Sets.grammers.map((grammer, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={grammer.id} onClick={this.toggleCollapse(grammer.id)} >
+                                            {grammer.title}
+                                            <h6 style={styles.learnIt} onClick={() => this.splitSentences(grammer.grammer)}>Learn it!</h6>
                                         </MDBListGroupItem>
                                             <MDBCard >
                                                 <MDBContainer >
-                                                    <MDBCollapse isOpen={this.state.collapseID} id={song.id} >
-                                                        {song.song.split('\n').map(data => <p style={{ textAlign: 'center' }}>{data}<br /> </p>)}
+                                                    <MDBCollapse isOpen={this.state.collapseID} id={grammer.id} >
+                                                        {grammer.grammer.split('\n').map(data => <p style={{ textAlign: 'center' }}>{data}<br /> </p>)}
                                                     </MDBCollapse>
                                                 </MDBContainer>
                                             </MDBCard>
@@ -145,14 +145,14 @@ class ContentPage extends React.Component {
                                 </MDBTabPane>
                                 <MDBTabPane tabId="3" role="tabpanel">
                                     <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '1em' }}>
-                                        {Sets.idioms.map((song, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={song.id} onClick={this.toggleCollapse(song.id)} >
-                                            {song.title}
-                                            <h6 style={styles.learnIt} onClick={() => this.splitSentences(song.song)}>Learn it!</h6>
+                                        {Sets.idioms.map((idiom, index) => <> <MDBListGroupItem key={index} style={styles.accordionContainer} key={idiom.id} onClick={this.toggleCollapse(idiom.id)} >
+                                            {idiom.title}
+                                            <h6 style={styles.learnIt} onClick={() => this.splitSentences(idiom.idiom)}>Learn it!</h6>
                                         </MDBListGroupItem>
                                             <MDBCard >
                                                 <MDBContainer >
-                                                    <MDBCollapse isOpen={this.state.collapseID} id={song.id} >
-                                                        {song.song.split('\n').map(data => <p style={{ textAlign: 'center' }}>{data}<br /> </p>)}
+                                                    <MDBCollapse isOpen={this.state.collapseID} id={idiom.id} >
+                                                        {idiom.idiom.split('\n').map(data => <p style={{ textAlign: 'center' }}>{data}<br /> </p>)}
                                                     </MDBCollapse>
                                                 </MDBContainer>
                                             </MDBCard>

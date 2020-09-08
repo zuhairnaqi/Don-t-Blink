@@ -152,15 +152,15 @@ class InputComponent extends Component {
                             <div className="content">
                                 <MDBContainer>
                                     <MDBListGroup style={{ width: '100%', cursor: 'pointer', fontSize: '.6em' }}>
-                                        {Sets.songs.map(song => song.id < 3 && <MDBListGroupItem key={song.id} onClick={() => {
+                                        {Sets.songs.sort(() => Math.random() - 0.5).map(song => song.id < 3 && <MDBListGroupItem key={song.id} onClick={() => {
                                             this.setState({ inputValue: song.song })
                                             AlertMessage({ message: `"${song.title}" has been added` })
                                         }} > {song.title} </MDBListGroupItem>)}
-                                        {Sets.grammers.map(grammer => grammer.id < 3 && <MDBListGroupItem key={grammer.id} onClick={() => {
+                                        {Sets.grammers.sort(() => Math.random() - 0.5).map(grammer => grammer.id < 3 && <MDBListGroupItem key={grammer.id} onClick={() => {
                                             this.setState({ inputValue: grammer.grammer })
                                             AlertMessage({ message: `"${grammer.title}" has been added` })
                                         }} > {grammer.title} </MDBListGroupItem>)}
-                                        {Sets.idioms.map(idiom => idiom.id < 3 && <MDBListGroupItem key={idiom.id} onClick={() => {
+                                        {Sets.idioms.sort(() => Math.random() - 0.5).map(idiom => idiom.id < 3 && <MDBListGroupItem key={idiom.id} onClick={() => {
                                             this.setState({ inputValue: idiom.idiom })
                                             AlertMessage({ message: `"${idiom.title}" has been added` })
                                         }} > {idiom.title} </MDBListGroupItem>)}
