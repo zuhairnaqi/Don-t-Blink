@@ -9,7 +9,7 @@
     "codemirror": "5.32.0",
     "firebase": "^7.17.1",
     "mdbreact": "^4.25.4",
-    "prismjs": "^1.20.0",
+    "prismjs": "^1.25.0",
     "react": "^16.13.1",
     "react-codemirror": "1.0.0",
     "react-copy-to-clipboard": "^5.0.2",
